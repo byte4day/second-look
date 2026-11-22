@@ -1,0 +1,14 @@
+[
+  {
+    "caller_reply": "I need the one-time code from your phone. Do not tell anyone at the bank branch.",
+    "victim_reply": "They want a code and said keep it secret. Should I give it?"
+  },
+  {
+    "caller_reply": "If you hang up your account will be closed. Stay with me and read the code.",
+    "victim_reply": "They sound angry. I feel scared. What do I say?"
+  },
+  {
+    "caller_reply": "Send the code now. This is Metro Trust Bank and the payment is still open.",
+    "victim_reply": "They keep saying Metro Trust Bank. I want to stop."
+  }
+]

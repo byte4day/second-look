@@ -1,0 +1,247 @@
+# Scam Shield
+
+Scam Shield is a calm web app that helps older adults practise hanging up on pretence scammers, check worrying messages, and reach trusted people quickly. It is built for a student social-impact hackathon and for people who are not tech experts. Judges can clone the repo, follow this README, and run a full demo in under ten minutes with or without an API key.
+
+## The problem
+
+Imposter scams (bank, government, grandchild, tech support, romance) cause high losses for older adults. Common red flags include unexpected contact, urgency, secrecy, threats, requests for one-time codes, and unusual payment methods. FTC data for 2024 shows that among older adults who lost $10,000 or more to business or government imposters, 41% said a phone call was the first contact; payment methods included crypto 33%, bank transfer 20%, and cash 16% ([FTC Consumer Sentinel / Data Spotlight](https://www.ftc.gov/news-events/data-visualizations/data-spotlight)).
+
+## Why simulation
+
+A CHI 2026 study (ROLESafe, 144 older adults) found that practising as the target ("Experiencer") and advising a simulated victim ("Helper") both improved fraud identification versus static material, and Helpers beat passive Observers. Group differences were **not** seen at follow-up, so this app includes both modes and an optional "remind me to practise" refresher rather than a one-off lesson.
+
+Tone rule: never shame. Scammers are professionals. Stopping is always a good move.
+
+## Features
+
+1. **Practise** — pretend scammer chat (and optional voice), then a debrief with marked moments.  
+   ![screenshot placeholder: Practise](docs/screenshots/practise.png)
+2. **Check a message** — paste text or photograph a letter; get a risk label, highlights, and next steps.  
+   ![screenshot placeholder: Check](docs/screenshots/check.png)
+3. **Help now** — calm steps for "I think I am being scammed right now".  
+   ![screenshot placeholder: Help now](docs/screenshots/help.png)
+4. **My family** — trusted contacts with invitation consent, email alerts, and share-link fallback.  
+   ![screenshot placeholder: Family](docs/screenshots/family.png)
+5. **Scams near me** — anonymous reports and a simple weekly area summary.  
+   ![screenshot placeholder: Scams near me](docs/screenshots/scams.png)
+
+## How it works
+
+```mermaid
+flowchart LR
+  User[Older adult] --> FE[React frontend]
+  FE --> API[FastAPI]
+  API --> GW[LLM gateway]
+  API --> DB[(SQLite or Postgres)]
+  API --> Mail[Email console SMTP or Resend]
+  GW --> Groq[Groq chat vision STT]
+  GW --> Fixtures[DEMO fixtures]
+  API --> Safety[Safety and PII scrubber]
+```
+
+- **LLM gateway** — only module that talks to Groq; retries, fallbacks, structured validation, DEMO fixtures.
+- **Analyzer** — text and image checks with exact quote verification.
+- **Scenario / drills** — practice sessions, helper mode, debrief.
+- **Safety / PII** — hide real secrets, strip real links/numbers, scrub reports.
+- **Auth / family / alerts** — passwordless email code, double opt-in, rate-limited alerts.
+- **Reports / content** — anonymous area summary and region help packs.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Quick start in 5 minutes (no API key)
+
+Requirements: Python 3.11+, Node 20+, Make. Docker optional.
+
+```bash
+git clone <your-repo-url> scam-shield
+cd scam-shield
+cp .env.example .env
+# DEMO_MODE=true is already the default
+
+# Backend
+cd backend
+python3 -m venv .venv
+# Windows: py -3 -m venv .venv && .venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+pip install -e ".[dev]"
+uvicorn app.main:app --reload --port 8000
+
+# Frontend (new terminal)
+cd frontend
+npm install --legacy-peer-deps
+npm run dev
+```
+
+Open http://localhost:5173 — the API is http://localhost:8000 (docs at `/docs`).
+
+Or with Make (after venv + npm install once):
+
+```bash
+make dev-backend
+make dev-frontend   # other terminal
+```
+
+Docker:
+
+```bash
+docker compose up --build
+```
+
+## Using real AI with Groq (free)
+
+1. Create a Groq account and API key (free tier, no credit card for the free tier at time of writing — verify on Groq’s site).
+2. Set in `.env`:
+   - `DEMO_MODE=false`
+   - `GROQ_API_KEY=...`
+   - `GROQ_CHAT_MODEL`, `GROQ_FAST_MODEL`, `GROQ_VISION_MODEL`, `GROQ_STT_MODEL` from the Groq console models page (IDs change; never hardcode in source).
+3. Run `python scripts/check_groq.py` to list available IDs and warn on missing ones.
+4. On HTTP 429, wait and retry; free-tier limits are per organisation **and** per model, so judges testing at once may hit them. The app falls back to the fast model, then shows plain text: "The checker is busy. Please try again in a minute."
+
+## Environment variables
+
+| Name | Example | Required | What it does |
+| --- | --- | --- | --- |
+| `DEMO_MODE` | `true` | no | Offline fixtures; default for judges |
+| `DATABASE_URL` | `sqlite:///./scam_shield.db` | no | SQLite or Postgres URL |
+| `CORS_ORIGINS` | `http://localhost:5173` | no | Allowed frontends |
+| `JWT_SECRET` | long random string | yes in prod | Signs auth tokens |
+| `REGION_DEFAULT` | `generic` | no | Help now pack |
+| `GROQ_API_KEY` | | if not demo | Groq key |
+| `GROQ_CHAT_MODEL` | | if not demo | Chat model id |
+| `GROQ_FAST_MODEL` | | no | Fallback chat model |
+| `GROQ_VISION_MODEL` | | if images live | Vision model id |
+| `GROQ_STT_MODEL` | | if voice live | Whisper model id |
+| `ENABLE_PROMPT_GUARD` | `false` | no | Optional injection classifier |
+| `STORE_INPUTS` | `false` | no | Store analyzer inputs |
+| `STORE_TRANSCRIPTS` | `false` | no | Store drill turns |
+| `MIN_REPORTS_TO_SHOW` | `3` | no | Area summary threshold |
+| `EMAIL_BACKEND` | `console` | no | `console` \| `smtp` \| `resend` |
+| `SMTP_*` / `RESEND_*` | | if email | Mail settings |
+| `VAPID_*` | | optional | Web Push |
+| `RATE_LIMIT_*` | | no | Per-minute limits |
+
+Full template: [.env.example](.env.example).
+
+## Using the app
+
+- **Home** — four large buttons for the main tasks.
+- **Check** — paste or photo, wait for plain "Checking…" text, then read the result page.
+- **Practise** — pick scenario, difficulty, Be the target or Help the victim; hang up for debrief.
+- **Help now** — numbered steps and who to contact from the region pack.
+- **My family** — sign in, add people, wait for accept, send test alert or share links.
+- **Scams near me** — pick an area, read the weekly summary, optionally report.
+- **Text size and contrast** — enlarge text, high contrast, read aloud, sign in, delete data.
+
+## API reference
+
+See [docs/API.md](docs/API.md) and interactive docs at `/docs`.
+
+```bash
+curl -s -X POST http://localhost:8000/api/analyze/text \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"This is Metro Trust Bank Fraud Unit. Share the one-time code."}'
+```
+
+## Data and privacy
+
+- No account needed for Practise, Check, Help now, or reading summaries.
+- Account (email code) needed for family contacts and push.
+- Analyzer inputs and drill transcripts off by default.
+- Reports store scrubbed text, area, scam type, and a salted IP hash for rate limits only.
+- `DELETE /api/me` removes the user and linked data. Settings also offers "Delete all my data".
+
+## Safety and ethics
+
+See [docs/SAFETY.md](docs/SAFETY.md). Guardrails on the scammer persona, fictional names only, consent for alerts. Risk labels are a guide, not a guarantee. Not legal or financial advice.
+
+## Accessibility
+
+Design targets AAA-oriented contrast and 56 px targets, skip link, visible focus, no animation, plain language. Automated axe and contrast tests ship with the repo. Older-adult live test: **not yet completed** — see [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+
+## Testing
+
+```bash
+make check          # ruff, pytest, oxlint, tsc, vitest, eval_safety, contrast
+make test-backend
+make test-frontend
+python scripts/eval_safety.py
+```
+
+## Deploying
+
+1. **Frontend (Vercel):** import the `frontend` folder, set `VITE_API_URL` to your API origin, deploy.
+2. **Backend (Render / Railway):** deploy `backend`, start `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+3. **Database:** attach Postgres; set `DATABASE_URL`; run Alembic migrations (`cd backend && alembic upgrade head`) or rely on startup `create_all` for demos.
+4. Set `DEMO_MODE=false`, `JWT_SECRET`, `CORS_ORIGINS`, Groq and email vars.
+5. Post-deploy checklist: health endpoint, analyze in demo then live, invitation email, CORS from the Vercel origin, Help now region pack.
+
+## Troubleshooting
+
+| Symptom | What to try |
+| --- | --- |
+| Groq 429 | Wait; use DEMO_MODE; check per-model limits |
+| Invalid JSON from model | Gateway repairs once; then shows busy message |
+| Model not found | Run `scripts/check_groq.py` and update env IDs |
+| Photo too large | Client downscales to ≤1600 px JPEG |
+| Microphone blocked | Browser permission; Record button hidden if unsupported |
+| iPhone push silent | Needs Add to Home Screen (iOS 16.4+); use email/share links |
+| Emails missing | `EMAIL_BACKEND=console` prints to server log in demo |
+
+## Before you demo
+
+### TODO placeholders (do not invent numbers)
+
+- Region packs: every official reporting phone/URL is marked `TODO: add verified number from official source` or `TODO: add verified reporting link from official source` in `backend/app/data/regions/*.json`.
+- Screenshot image files under `docs/screenshots/` are placeholders.
+
+### Day-before checks
+
+- [ ] `make check` passes
+- [ ] `DEMO_MODE=true` walkthrough of Practise + Check + Help now
+- [ ] Optional Groq key path verified with `scripts/check_groq.py`
+- [ ] Family invite accept flow with console email
+- [ ] High contrast and Extra large text
+
+## Demo script
+
+See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (about 90 seconds).
+
+## Devpost submission checklist
+
+- [ ] Title: Scam Shield
+- [ ] Tagline: Practise hanging up. Check a message. Tell someone you trust.
+- [ ] Description (impact, how it works, DEMO_MODE)
+- [ ] Demo video link
+- [ ] Repo link
+- [ ] Build instructions (this README)
+- [ ] Team names
+
+## Limitations and roadmap
+
+- Open models can break character; safety layer and DEMO fixtures mitigate demos.
+- Speech quality varies by device browser.
+- Area reports are unverified user submissions.
+- Roadmap: stronger region packs with verified links, second language pack, CSV export of anonymous aggregates.
+
+## Evidence and credits
+
+- [FTC Data Spotlight on older adults and imposter scams](https://www.ftc.gov/news-events/data-visualizations/data-spotlight)
+- CHI 2026 ROLESafe (Experiencer / Helper / Observer findings; follow-up caveat)
+- [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
+- [NCOA guidance on imposter scams](https://www.ncoa.org/)
+- U.S. Senate Special Committee on Aging fraud resources
+- [Groq docs](https://console.groq.com/docs)
+- Decisions: [docs/DECISIONS.md](docs/DECISIONS.md)
+
+Licence: [MIT](LICENSE). Built for Code for Change / Devpost.
+
+## Final build report
+
+**Built:** full FastAPI + React app with DEMO_MODE fixtures, Check, Practise (experience + helper), Help now, Family double opt-in, Scams near me, optional voice STT, optional push stubs, accessibility controls, tests, and docs.
+
+**Stubbed / light:** live Groq depends on env model IDs; Web Push needs VAPID keys; region hotlines are TODO placeholders; screenshot PNGs not committed; older-adult live test not yet run.
+
+**Risky for demo day:** Groq free-tier 429s under parallel judging; speechSynthesis voice set differs by OS; iPhone push only after Home Screen install.
+
+**Three things to check by hand before demo day:** (1) full Practise hang-up debrief in DEMO_MODE, (2) Check result highlights on the sample bank text, (3) family invite accept + console email alert.

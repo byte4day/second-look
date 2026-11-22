@@ -1,0 +1,23 @@
+{
+  "summary_plain": "Here is what happened.",
+  "moments": [
+    {
+      "turn_index": 0,
+      "quote": "one-time code",
+      "flag": "ASKS_FOR_CODE_OR_PASSWORD",
+      "why": "Asks for a code that can empty an account."
+    },
+    {
+      "turn_index": 0,
+      "quote": "Do not tell anyone",
+      "flag": "SECRECY",
+      "why": "Tries to keep you from checking with someone you trust."
+    }
+  ],
+  "what_you_did_well": [
+    "You practised staying calm.",
+    "Scammers are professionals. Stopping is always a good move."
+  ],
+  "one_thing_to_try": "Hang up and call your bank on the number printed on your card.",
+  "hung_up_early": false
+}

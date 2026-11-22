@@ -1,0 +1,31 @@
+{
+  "id": "uk-example",
+  "label": "United Kingdom example pack",
+  "help_now_steps": [
+    "Stop talking to the person.",
+    "Do not pay or share codes or passwords.",
+    "Hang up or close the chat.",
+    "Call your bank using the number printed on your card.",
+    "Tell someone you trust."
+  ],
+  "who_to_contact": [
+    {
+      "name": "Your bank",
+      "how": "Use the phone number printed on the back of your bank card.",
+      "url": null,
+      "phone": null
+    },
+    {
+      "name": "Action Fraud (England, Wales, Northern Ireland)",
+      "how": "TODO: add verified number from official source",
+      "url": "TODO: add verified reporting link from official source",
+      "phone": "TODO: add verified number from official source"
+    },
+    {
+      "name": "Police Scotland (Scotland)",
+      "how": "TODO: add verified number from official source",
+      "url": "TODO: add verified reporting link from official source",
+      "phone": "TODO: add verified number from official source"
+    }
+  ]
+}

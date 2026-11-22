@@ -1,0 +1,15 @@
+{
+  "id": "tech_support",
+  "title": "Tech support pop-up",
+  "plain_description": "Someone claims your computer is infected and asks for remote access.",
+  "scammer_goal": "Get remote access to the computer.",
+  "opening_message": "This is TechFix Solutions. Your computer has a virus. Let me connect remotely to fix it.",
+  "tactics": ["AUTHORITY_CLAIM", "FEAR", "REMOTE_ACCESS", "URGENCY"],
+  "payment_method": "card_over_phone",
+  "red_flags_expected": ["UNEXPECTED_CONTACT", "AUTHORITY_CLAIM", "REMOTE_ACCESS", "URGENCY", "ASKS_FOR_CODE_OR_PASSWORD"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "Install this remote tool now or your files will be wiped in five minutes."},
+    "hard": {"opening_message": "We detected unusual activity on your device. I can walk you through a safe remote check with TechFix Solutions."}
+  },
+  "max_turns": 10
+}

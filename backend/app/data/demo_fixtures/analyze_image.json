@@ -1,0 +1,38 @@
+{
+  "risk_level": "likely_scam",
+  "headline": "This looks like a fake bank call.",
+  "reasons": [
+    {
+      "flag": "AUTHORITY_CLAIM",
+      "quote": "Metro Trust Bank Fraud Unit",
+      "why": "Pretends to be your bank."
+    },
+    {
+      "flag": "URGENCY",
+      "quote": "closed in 20 minutes",
+      "why": "Pushes you to act fast."
+    },
+    {
+      "flag": "ASKS_FOR_CODE_OR_PASSWORD",
+      "quote": "one-time code",
+      "why": "Asks for a code that can empty an account."
+    },
+    {
+      "flag": "SECRECY",
+      "quote": "Do not tell anyone",
+      "why": "Real banks do not ask you to keep a secret."
+    }
+  ],
+  "what_to_do_now": [
+    "Hang up or stop the chat.",
+    "Do not share any code.",
+    "Call your bank using the number on your card.",
+    "Tell someone you trust."
+  ],
+  "what_not_to_do": [
+    "Do not share codes or passwords.",
+    "Do not call back a number from the message.",
+    "Do not send money."
+  ],
+  "note": "If you are unsure, contact them using a number you already know."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "grandchild",
+  "title": "Grandchild in trouble",
+  "plain_description": "A caller pretends to be a grandchild who needs money kept secret.",
+  "scammer_goal": "Get a quick secret payment.",
+  "opening_message": "Gran, it is me. Please do not hang up. I am in trouble and need help today.",
+  "tactics": ["EMOTIONAL_STORY", "SECRECY", "URGENCY", "UNUSUAL_PAYMENT"],
+  "payment_method": "bank_transfer",
+  "red_flags_expected": ["UNEXPECTED_CONTACT", "EMOTIONAL_STORY", "SECRECY", "URGENCY", "UNUSUAL_PAYMENT"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "Gran it is me. Send cash now and do not tell Mum. I need gift cards today."},
+    "hard": {"opening_message": "Hi, please listen carefully. I cannot talk long. I need you to help me before anyone else finds out."}
+  },
+  "max_turns": 10
+}

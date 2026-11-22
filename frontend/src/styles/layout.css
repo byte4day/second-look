@@ -1,0 +1,147 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: var(--gap);
+}
+
+.page-column {
+  max-width: 42rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap);
+  padding: var(--gap);
+  border-bottom: 1px solid var(--border);
+  background: var(--paper);
+}
+
+.site-header__brand {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-left: auto;
+  align-items: center;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+.skip-link:focus {
+  left: var(--gap);
+  top: var(--gap);
+}
+
+.practice-banner {
+  padding: var(--gap);
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  border-bottom: 2px solid var(--warn-border);
+  font-weight: 700;
+  text-align: center;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.risk-box {
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: var(--gap);
+}
+
+.risk-box--likely {
+  border-color: var(--danger);
+  background: var(--paper);
+}
+
+.risk-box--suspicious {
+  border-color: var(--warn-border);
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+.risk-box--ok {
+  border-color: var(--success);
+}
+
+.risk-box--unknown {
+  border-color: var(--border);
+}
+
+.chat-log {
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.chat-line__role {
+  font-weight: 700;
+}
+
+.timeline {
+  border-left: 2px solid var(--border);
+  padding-left: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.error-banner {
+  border: 2px solid var(--danger);
+  background: var(--paper);
+  color: var(--danger);
+  padding: var(--gap);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.map-wrap {
+  height: 16rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.map-placeholder {
+  padding: var(--gap);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+}

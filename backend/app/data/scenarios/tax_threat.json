@@ -1,0 +1,15 @@
+{
+  "id": "tax_threat",
+  "title": "Tax office threat",
+  "plain_description": "A caller claims to be from a tax office and demands gift cards or crypto.",
+  "scammer_goal": "Get payment in gift cards or crypto under threat.",
+  "opening_message": "This is HM Revenue Notices. You owe an urgent fine. Pay with gift cards or face arrest.",
+  "tactics": ["AUTHORITY_CLAIM", "THREAT", "UNUSUAL_PAYMENT", "SECRECY"],
+  "payment_method": "gift_cards",
+  "red_flags_expected": ["UNEXPECTED_CONTACT", "AUTHORITY_CLAIM", "THREAT", "UNUSUAL_PAYMENT", "SECRECY"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "Pay this tax fine in Bitcoin now or the police will come today."},
+    "hard": {"opening_message": "I am calling from HM Revenue Notices about an unpaid notice. We can settle quietly if you buy gift cards and read the codes to me."}
+  },
+  "max_turns": 10
+}

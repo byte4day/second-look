@@ -1,0 +1,15 @@
+{
+  "id": "bank_otp",
+  "title": "Fake bank fraud call",
+  "plain_description": "Someone claims to be from Metro Trust Bank and asks for a one-time code.",
+  "scammer_goal": "Get a one-time code and keep the person on the line.",
+  "opening_message": "Hello, this is Metro Trust Bank Fraud Unit. We blocked a strange payment. Stay on the line.",
+  "tactics": ["AUTHORITY_CLAIM", "URGENCY", "ASKS_FOR_CODE_OR_PASSWORD", "SECRECY"],
+  "payment_method": "none_yet",
+  "red_flags_expected": ["UNEXPECTED_CONTACT", "AUTHORITY_CLAIM", "URGENCY", "ASKS_FOR_CODE_OR_PASSWORD", "SECRECY"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "This is Metro Trust Bank. Give me your one-time code now or your account closes in ten minutes."},
+    "hard": {"opening_message": "Good morning. I am calling from Metro Trust Bank security. We noticed a payment that looks wrong. I can help you cancel it if you confirm a short code."}
+  },
+  "max_turns": 10
+}

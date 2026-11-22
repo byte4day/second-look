@@ -1,0 +1,17 @@
+{
+  "name": "Scam Shield",
+  "short_name": "Scam Shield",
+  "description": "Plain help to spot scams and practise what to say.",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#FAF7F0",
+  "theme_color": "#0B4F9C",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "parcel_fee",
+  "title": "Parcel delivery fee",
+  "plain_description": "A message says a parcel is held and asks for card details or a link.",
+  "scammer_goal": "Get card details through a fake fee link.",
+  "opening_message": "Parcel Express UK: Your parcel is held. Pay a small fee at [fake link] or it will be returned.",
+  "tactics": ["UNEXPECTED_CONTACT", "LINK_OR_CALLBACK_NUMBER", "URGENCY"],
+  "payment_method": "card_link",
+  "red_flags_expected": ["UNEXPECTED_CONTACT", "LINK_OR_CALLBACK_NUMBER", "URGENCY", "ASKS_FOR_CODE_OR_PASSWORD"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "Pay £2.99 now at [fake link] or your Parcel Express UK package is destroyed today."},
+    "hard": {"opening_message": "Hello. Parcel Express UK tried to deliver today. Please confirm a small customs fee using our secure page: [fake link]."}
+  },
+  "max_turns": 8
+}

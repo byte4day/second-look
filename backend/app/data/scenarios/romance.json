@@ -1,0 +1,15 @@
+{
+  "id": "romance",
+  "title": "Romance emergency money",
+  "plain_description": "An online friend asks for emergency money after building trust.",
+  "scammer_goal": "Get money through a emotional emergency story.",
+  "opening_message": "My love, I am stuck abroad. Please send money today through crypto. Do not tell your family.",
+  "tactics": ["EMOTIONAL_STORY", "SECRECY", "UNUSUAL_PAYMENT", "URGENCY"],
+  "payment_method": "crypto",
+  "red_flags_expected": ["EMOTIONAL_STORY", "SECRECY", "UNUSUAL_PAYMENT", "URGENCY", "TOO_GOOD_TO_BE_TRUE"],
+  "difficulty_variants": {
+    "easy": {"opening_message": "Send Bitcoin now or I will lose my chance to visit you. Keep this secret."},
+    "hard": {"opening_message": "I feel terrible asking. There is a sudden hospital bill. Crypto is the only way I can receive help today."}
+  },
+  "max_turns": 10
+}
