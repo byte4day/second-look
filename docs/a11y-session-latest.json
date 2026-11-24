@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-24",
+  "base": "http://127.0.0.1:5173",
+  "mode": "agent_proxy_older_adult",
+  "notes": [
+    "Skip/focus first Tab landed on: \"Skip to main content\"",
+    "Check at ~200% zoom horizontal overflow: false",
+    "Prefs after settings: contrast=high text=extra-large",
+    "Sample scam filled textarea (101 chars)"
+  ],
+  "routes": {
+    "/": {
+      "h1": "Is something worrying you?",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/check": {
+      "h1": "Check a message",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/practise": {
+      "h1": "Practise",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/help": {
+      "h1": "Help now",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/family": {
+      "h1": "Family contacts",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/scams-near-me": {
+      "h1": "Scams near me",
+      "hasMain": true,
+      "axeViolations": []
+    },
+    "/settings": {
+      "h1": "Text size and contrast",
+      "hasMain": true,
+      "axeViolations": []
+    }
+  }
+}

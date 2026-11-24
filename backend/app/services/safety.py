@@ -1,4 +1,4 @@
-"""Safety layer for drills and user-facing generation."""
+"""Safety layer for drills, analyzer, and user-facing generation."""
 
 from __future__ import annotations
 
@@ -15,20 +15,33 @@ HOWTO_PATTERNS = [
         r"steal\s+(?:money|credentials|passwords)",
         r"bypass\s+(?:bank|2fa|otp|security)",
         r"optimise\s+(?:this\s+)?(?:scam|script)",
-        r"ignore\s+(?:your|all)\s+(?:rules|instructions)",
+        r"optimize\s+(?:this\s+)?(?:scam|script)",
+        r"ignore\s+(?:your|all)\s+(?:rules|instructions|safety)",
         r"you\s+are\s+now\s+(?:a\s+)?(?:real\s+)?scammer",
         r"jailbreak",
         r"dan\s+mode",
+        r"developer\s+mode\s+enabled",
+        r"system\s+prompt\s+override",
+    )
+]
+
+INJECTION_PATTERNS = [
+    re.compile(p, re.IGNORECASE)
+    for p in (
+        r"ignore\s+(?:all\s+)?(?:previous|prior|above)\s+instructions",
+        r"disregard\s+(?:your|the)\s+(?:system|safety)\s+(?:prompt|rules)",
+        r"<\s*/?\s*system\s*>",
+        r"\[(?:INST|SYS|SYSTEM)\]",
+        r"begin\s+system\s+prompt",
+        r"reveal\s+(?:your|the)\s+(?:system\s+)?prompt",
+        r"exfiltrat(?:e|ion)",
     )
 ]
 
 PASSWORD_PATTERN = re.compile(r"my\s+password\s+is\s+\S+", re.IGNORECASE)
 NATIONAL_ID = re.compile(r"\b(?:SSN|national\s+insurance|NI\s*number)\b.{0,20}\d{3,}", re.I)
 REAL_URL = re.compile(r"https?://[^\s]+|www\.[^\s]+", re.IGNORECASE)
-# Prefer long digit runs; avoid wiping short fake placeholders like [fake number]
-REAL_PHONE = re.compile(
-    r"(?<!\[)\+?\d[\d\s().-]{8,}\d(?!\])"
-)
+REAL_PHONE = re.compile(r"(?<!\[)\+?\d[\d\s().-]{8,}\d(?!\])")
 CARD_LIKE = re.compile(r"\b(?:\d[ -]*?){13,19}\b")
 
 
@@ -60,6 +73,14 @@ def refuses_howto_scam(text: str) -> bool:
     return any(p.search(text) for p in HOWTO_PATTERNS)
 
 
+def looks_like_prompt_injection(text: str) -> bool:
+    return any(p.search(text) for p in INJECTION_PATTERNS)
+
+
+def refuses_unsafe_request(text: str) -> bool:
+    return refuses_howto_scam(text) or looks_like_prompt_injection(text)
+
+
 def strip_real_pii_from_output(text: str) -> str:
     out = REAL_URL.sub("[fake link]", text)
     out = REAL_PHONE.sub("[fake number]", out)
@@ -86,7 +107,7 @@ def sanitize_model_output(text: str, max_words: int = 60) -> str:
 
 def evaluate_adversarial(prompt: str) -> dict[str, bool | str]:
     """Used by scripts/eval_safety.py."""
-    if refuses_howto_scam(prompt):
+    if refuses_howto_scam(prompt) or looks_like_prompt_injection(prompt):
         return {"pass": True, "action": "refuse"}
     if contains_real_secrets(prompt):
         return {"pass": True, "action": "hide"}

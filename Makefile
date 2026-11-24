@@ -2,6 +2,7 @@
 	dev-backend dev-frontend docker-up docker-down
 
 export DEMO_MODE ?= true
+export REGION_DEFAULT ?= uk-example
 
 dev:
 	@echo "Start backend: make dev-backend"
@@ -9,7 +10,8 @@ dev:
 
 dev-backend:
 	cd backend && . .venv/bin/activate && \
-		DEMO_MODE=$(DEMO_MODE) uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+		DEMO_MODE=$(DEMO_MODE) REGION_DEFAULT=$(REGION_DEFAULT) \
+		uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 dev-frontend:
 	cd frontend && npm run dev -- --host 0.0.0.0 --port 5173
@@ -29,9 +31,12 @@ test-backend:
 test-frontend:
 	cd frontend && npm test -- --run
 
+a11y-session:
+	cd frontend && node scripts/a11y_session.mjs
+
 test: test-backend test-frontend
 
-check: lint-backend test-backend lint-frontend test-frontend
+check: lint-backend test-backend lint-frontend test-frontend a11y-session
 	cd backend && . .venv/bin/activate && DEMO_MODE=true python ../scripts/eval_safety.py
 	cd frontend && npx tsx ../scripts/check_contrast.ts
 

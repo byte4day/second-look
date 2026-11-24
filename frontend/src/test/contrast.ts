@@ -23,14 +23,14 @@ export function contrastRatio(foreground: string, background: string): number {
 }
 
 export const tokenPairs: [string, string, string][] = [
-  ['ink on paper', '#1B1B1B', '#FAF7F0'],
-  ['ink-muted on paper', '#404040', '#FAF7F0'],
-  ['primary on paper', '#0B4F9C', '#FAF7F0'],
-  ['on-primary on primary', '#FFFFFF', '#0B4F9C'],
-  ['danger on paper', '#A11A1A', '#FAF7F0'],
-  ['on-danger on danger', '#FFFFFF', '#A11A1A'],
-  ['success on paper', '#1B5E31', '#FAF7F0'],
-  ['warn-ink on warn-bg', '#4A3200', '#FFF1C2'],
+  ['ink on paper', '#14201A', '#F3F5F2'],
+  ['ink-muted on paper', '#2A3A32', '#F3F5F2'],
+  ['primary on paper', '#0A4D8C', '#F3F5F2'],
+  ['on-primary on primary', '#FFFFFF', '#0A4D8C'],
+  ['danger on paper', '#9B1C1C', '#F3F5F2'],
+  ['on-danger on danger', '#FFFFFF', '#9B1C1C'],
+  ['success on paper', '#145A32', '#F3F5F2'],
+  ['warn-ink on warn-bg', '#3D2E00', '#FFF4CC'],
 ]
 
 export const TARGET_MIN_REM = 3.5

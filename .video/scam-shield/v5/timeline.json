@@ -1,0 +1,68 @@
+{
+ "total": 50.22,
+ "lines": [
+  {
+   "i": 0,
+   "dur": 5.75,
+   "text": "Hi, I'm Bit. Meet Margaret. She's seventy four, and a text just said her bank account is locked.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/00.wav",
+   "start": 0.8
+  },
+  {
+   "i": 1,
+   "dur": 2.16,
+   "text": "She presses number one, and pastes it in.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/01.wav",
+   "start": 7.65
+  },
+  {
+   "i": 2,
+   "dur": 7.73,
+   "text": "Scam Shield marks the exact red flags, a fake fraud alert, a rushed reply, and says what to do next, in plain English.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/02.wav",
+   "start": 10.31
+  },
+  {
+   "i": 3,
+   "dur": 5.48,
+   "text": "Number two is practice. A pretend scammer calls, asking for a code. Margaret hangs up.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/03.wav",
+   "start": 19.04
+  },
+  {
+   "i": 4,
+   "dur": 2.26,
+   "text": "Then a debrief shows every trick she spotted.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/04.wav",
+   "start": 25.02
+  },
+  {
+   "i": 5,
+   "dur": 4.74,
+   "text": "If it's happening right now, number three gives five calm steps and real helplines.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/05.wav",
+   "start": 27.88
+  },
+  {
+   "i": 6,
+   "dur": 4.4,
+   "text": "Number four alerts her family. Number five shows scams reported nearby.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/06.wav",
+   "start": 33.22
+  },
+  {
+   "i": 7,
+   "dur": 5.52,
+   "text": "Powered by the Uno Router A P I, with an offline demo mode, and tested end to end.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/07.wav",
+   "start": 38.32
+  },
+  {
+   "i": 8,
+   "dur": 2.68,
+   "text": "Scam Shield. Stopping is always a good move.",
+   "file": "/home/byte/hackathon/.video/scam-shield/v5/vo/08.wav",
+   "start": 44.74
+  }
+ ]
+}

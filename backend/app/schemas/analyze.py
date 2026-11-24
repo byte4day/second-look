@@ -73,6 +73,30 @@ class AnalyzeTextRequest(BaseModel):
     text: str = Field(min_length=1, max_length=8000)
 
 
+# ~1.8MB binary ≈ 2.5M base64 chars; keeps Fluid/server payloads safe.
+_MAX_IMAGE_B64 = 2_500_000
+
+
 class AnalyzeImageRequest(BaseModel):
-    image_base64: str = Field(min_length=1)
-    mime_type: str = Field(default="image/jpeg", pattern=r"^image/")
+    image_base64: str = Field(min_length=1, max_length=_MAX_IMAGE_B64)
+    mime_type: str = Field(default="image/jpeg", pattern=r"^image/(jpeg|jpg|png|webp|gif)$")
+
+    @field_validator("mime_type")
+    @classmethod
+    def normalize_mime(cls, v: str) -> str:
+        return v.lower().replace("image/jpg", "image/jpeg")
+
+
+class OcrRequest(BaseModel):
+    image_base64: str = Field(min_length=1, max_length=_MAX_IMAGE_B64)
+    mime_type: str = Field(default="image/jpeg", pattern=r"^image/(jpeg|jpg|png|webp|gif)$")
+
+    @field_validator("mime_type")
+    @classmethod
+    def normalize_mime(cls, v: str) -> str:
+        return v.lower().replace("image/jpg", "image/jpeg")
+
+
+class OcrResult(BaseModel):
+    text: str
+    found: bool

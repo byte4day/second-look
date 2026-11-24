@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api/client.ts'
 import { Button } from '../components/Button.tsx'
@@ -7,10 +7,14 @@ import { strings } from '../strings.ts'
 export function ConfirmRemoveContact() {
   const { contactId = '' } = useParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const remove = useMutation({
     mutationFn: () => api.removeFamily(Number(contactId)),
-    onSuccess: () => navigate('/family'),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['family'] })
+      navigate('/family')
+    },
   })
 
   return (
@@ -25,6 +29,11 @@ export function ConfirmRemoveContact() {
       >
         {strings.confirmRemoveYes}
       </Button>
+      {remove.isError ? (
+        <p className="note" role="alert">
+          {remove.error.message}
+        </p>
+      ) : null}
       <Button variant="secondary" block onClick={() => navigate('/family')}>
         {strings.confirmRemoveNo}
       </Button>

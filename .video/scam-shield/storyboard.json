@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "slug": "scam-shield",
+  "aspect": "16:9",
+  "fps": 30,
+  "totalDurationSec": 55,
+  "compositionId": "Main",
+  "scenes": [
+    {
+      "id": "s1",
+      "startSec": 0,
+      "durationSec": 4,
+      "beat": "hook",
+      "shot": "Paper full-bleed; quiet phone silhouette or abstract handset line-art; ink title settles",
+      "onScreenText": "Imposter scams target older adults",
+      "voiceover": "Imposter scams — bank, government, tech support — often start with a phone call to older adults.",
+      "camera": "push_in",
+      "transition": "hard_cut",
+      "assets": [],
+      "notes": "PROBLEM OPEN. Never show a shamed victim face. Palette paper #F3F5F2 / ink #14201A. Phone graphic illustrative only — not product UI."
+    },
+    {
+      "id": "s2",
+      "startSec": 4,
+      "durationSec": 5.5,
+      "beat": "hook",
+      "shot": "Stat card on paper; large 41%; small FTC source line; hold for read",
+      "onScreenText": "FTC 2024: among older adults with $10k+ business/gov imposter losses, 41% were first contacted by phone",
+      "voiceover": "In twenty twenty-four, among older adults who reported losing ten thousand dollars or more to a business or government imposter scam, forty-one percent said a phone call was the first contact.",
+      "camera": "static",
+      "transition": "crossfade",
+      "assets": [],
+      "notes": "SOURCED — FTC Imposter Data Spotlight Aug 2025 footnote 4. Cite micro: FTC Imposter Data Spotlight. Do not add invented dollar-loss totals."
+    },
+    {
+      "id": "s3",
+      "startSec": 9.5,
+      "durationSec": 3.5,
+      "beat": "key",
+      "shot": "Tone card; shield blue underline; dissolve toward product",
+      "onScreenText": "Scammers are professionals. Stopping is always a good move.",
+      "voiceover": "Scammers are professionals. Stopping is always a good move.",
+      "camera": "drift",
+      "transition": "crossfade",
+      "assets": [],
+      "notes": "Dignity bridge into solution. Never shame. Shield accent #0A4D8C."
+    },
+    {
+      "id": "s4",
+      "startSec": 13,
+      "durationSec": 4,
+      "beat": "key",
+      "shot": "Live Home UI: brand bar + Scam Shield + Is something worrying you? + large action buttons",
+      "onScreenText": "Scam Shield — Is something worrying you?",
+      "voiceover": "Scam Shield. Choose one thing. Take your time.",
+      "camera": "push_in",
+      "transition": "hard_cut",
+      "assets": [
+        "assets/captures/01-home.png",
+        "assets/captures/ui-session.webm",
+        "docs/screenshots/home.png"
+      ],
+      "notes": "SOLUTION START. Prefer live capture / ui-session.webm. Brand first; show plain large buttons. DEMO_MODE app at 127.0.0.1:5173."
+    },
+    {
+      "id": "s5",
+      "startSec": 17,
+      "durationSec": 5.5,
+      "beat": "proof",
+      "shot": "Check screen: sample Chase-style scam SMS pasted; cursor hits Check this message",
+      "onScreenText": "Check a message",
+      "voiceover": "Paste a worrying message — or photograph a letter — and check it.",
+      "camera": "static",
+      "transition": "hard_cut",
+      "assets": [
+        "assets/captures/02-check-filled.png",
+        "assets/captures/ui-session.webm",
+        "docs/samples/scam-sms-chase.txt",
+        "docs/screenshots/check.png"
+      ],
+      "notes": "Sample path: docs/samples/scam-sms-chase.txt (Chase Alert / chase-verify.com). Soft click SFX on submit."
+    },
+    {
+      "id": "s6",
+      "startSec": 22.5,
+      "durationSec": 6,
+      "beat": "proof",
+      "shot": "Check result: yellow phrase highlights + risk label Likely a scam; hold",
+      "onScreenText": "Likely a scam",
+      "voiceover": "Risk label and highlighted phrases — a guide for next steps, not a guarantee.",
+      "camera": "static",
+      "transition": "hard_cut",
+      "assets": [
+        "assets/captures/03-result.png",
+        "assets/captures/ui-session.webm"
+      ],
+      "notes": "Hold for readable risk label. Product string riskLikely. Safety: guide not guarantee — keep VO soft."
+    },
+    {
+      "id": "s7",
+      "startSec": 28.5,
+      "durationSec": 8,
+      "beat": "proof",
+      "shot": "Practise: Fake bank fraud call setup → yellow pretend banner chat → Hang up → brief debrief praise",
+      "onScreenText": "Practise: Fake bank fraud call",
+      "voiceover": "Practise hanging up on a pretend bank fraud call — then see how you did.",
+      "camera": "pan_right",
+      "transition": "hard_cut",
+      "assets": [
+        "assets/captures/04-practise.png",
+        "assets/captures/05-practise-chat.png",
+        "assets/captures/06-debrief.png",
+        "assets/captures/ui-session.webm",
+        "docs/screenshots/practise.png"
+      ],
+      "notes": "One idea: bank fraud drill. Keep yellow This is pretend banner visible. Compress setup→chat→hang-up→debrief inside 8s via ui-session.webm trim."
+    },
+    {
+      "id": "s8",
+      "startSec": 36.5,
+      "durationSec": 6,
+      "beat": "proof",
+      "shot": "Help now: numbered calm steps; Who to contact — Action Fraud number large",
+      "onScreenText": "Action Fraud 0300 123 2040",
+      "voiceover": "If it is happening now — calm steps, and Action Fraud on zero three hundred, one two three, two zero four zero.",
+      "camera": "static",
+      "transition": "hard_cut",
+      "assets": [
+        "assets/captures/07-help.png",
+        "assets/captures/ui-session.webm",
+        "docs/screenshots/help.png"
+      ],
+      "notes": "UK region pack only. Do not invent other hotlines. Danger red for I need help now chrome OK; number stays ink-readable."
+    },
+    {
+      "id": "s9",
+      "startSec": 42.5,
+      "durationSec": 7.5,
+      "beat": "proof",
+      "shot": "Split or sequential: backend pytest green + frontend vitest green; brief terminal/CI B-roll",
+      "onScreenText": "Tests green — pytest · vitest",
+      "voiceover": "Real automated tests — backend pytest, frontend vitest — green for the judges.",
+      "camera": "static",
+      "transition": "hard_cut",
+      "assets": [],
+      "notes": "CAPTURE NEEDED if not in ui-session.webm: record make check / pytest + vitest pass. Success #145A32 accents only. Keep short — credibility, not a CI tour."
+    },
+    {
+      "id": "s10",
+      "startSec": 50,
+      "durationSec": 5,
+      "beat": "cta",
+      "shot": "Brand lockup on paper; DEMO_MODE line for judges; tagline under",
+      "onScreenText": "Calm guide · DEMO_MODE for judges",
+      "voiceover": "A calm guide you can clone and run — DEMO_MODE on. Practise hanging up. Check a message. Tell someone you trust.",
+      "camera": "pull_out",
+      "transition": "crossfade",
+      "assets": [
+        "assets/captures/01-home.png",
+        "docs/screenshots/home.png"
+      ],
+      "notes": "CLOSE. Judges CTA = run under ten minutes with DEMO_MODE=true. Optional micro: Devpost tagline. No Family/Scams in this cut."
+    }
+  ]
+}

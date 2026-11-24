@@ -30,3 +30,21 @@ coverage/
 htmlcov/
 .coverage
 *.log
+
+# SQLite side files
+*.db-shm
+*.db-wal
+
+# Video build outputs (scripts are kept; renders and raw assets are not)
+.video/**/assets/
+.video/**/out/
+.video/**/cap/
+.video/**/preview*/
+.video/**/vo/
+.video/**/mascot/
+.video/**/*.mp4
+.video/**/*.wav
+.video/**/*.png
+.video/**/__pycache__/
+backend/package.json
+backend/package-lock.json

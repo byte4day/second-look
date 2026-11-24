@@ -11,7 +11,16 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.post("/request-code")
 def request_code(body: RequestCodeBody, db: DbSession):
-    auth_service.request_code(db, body.email)
+    try:
+        auth_service.request_code(db, body.email)
+    except auth_service.EmailSendError:
+        raise HTTPException(
+            status_code=502,
+            detail=error_detail(
+                "email_failed",
+                "We could not send the email just now. Please try again in a minute.",
+            ),
+        ) from None
     return {"ok": True}
 
 

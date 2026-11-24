@@ -11,7 +11,7 @@
   "who_to_contact": [
     {
       "name": "Your bank",
-      "how": "Use the phone number printed on the back of your bank card.",
+      "how": "Use the phone number printed on the back of your bank card. Do not use a number from the message or call.",
       "url": null,
       "phone": null
     },
@@ -22,10 +22,10 @@
       "phone": null
     },
     {
-      "name": "Official scam reporting",
-      "how": "TODO: add verified number from official source",
-      "url": "TODO: add verified reporting link from official source",
-      "phone": "TODO: add verified number from official source"
+      "name": "FTC ReportFraud (United States)",
+      "how": "Report the scam online, or call the FTC help line.",
+      "url": "https://reportfraud.ftc.gov/",
+      "phone": "1-877-382-4357"
     }
   ]
 }

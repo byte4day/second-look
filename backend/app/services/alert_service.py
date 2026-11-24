@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.models.entities import AlertLog, FamilyContact, User
 from app.services import email_service
 
@@ -37,21 +38,28 @@ def send_alerts(
     if contact_ids:
         q = q.where(FamilyContact.id.in_(contact_ids))
     contacts = list(db.scalars(q))
+    if not contacts:
+        return 0, 0
+    # One log row per alert (not per email), committed BEFORE sending so a
+    # partial SMTP failure still counts against the hourly limit.
+    db.add(AlertLog(user_id=user.id, alert_type="family", channel="email"))
+    db.commit()
     sent = 0
     skipped = 0
-    share_base = "https://app.scam-shield.example/share"
+    help_url = get_settings().public_app_url.rstrip("/") + "/help"
     for c in contacts:
         body = (
             f"{user.email} asked us to notify you:\n\n{message_plain}\n\n"
-            f"View their safety checklist: {share_base}/{user.id}"
+            f"Calm steps you can go through together: {help_url}"
         )
-        ok = email_service.send_email(c.email, "Scam Shield family alert", body)
+        try:
+            ok = email_service.send_email(c.email, "Scam Shield family alert", body)
+        except Exception:  # noqa: BLE001
+            ok = False
         if ok:
             sent += 1
-            db.add(AlertLog(user_id=user.id, alert_type="family", channel="email"))
         else:
             skipped += 1
-    db.commit()
     return sent, skipped
 
 

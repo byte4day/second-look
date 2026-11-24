@@ -16,7 +16,16 @@ def list_family(db: DbSession, user: User = Depends(require_user)):
 
 @router.post("", response_model=FamilyContactOut)
 def add_family(body: FamilyContactCreate, db: DbSession, user: User = Depends(require_user)):
-    contact = family_service.invite_contact(db, user, body.name, body.email)
+    try:
+        contact = family_service.invite_contact(db, user, body.name, body.email)
+    except family_service.InviteLimitError:
+        raise HTTPException(
+            status_code=429,
+            detail=error_detail(
+                "invite_limit",
+                "You have sent several invitations today. Please try again tomorrow.",
+            ),
+        ) from None
     return FamilyContactOut.model_validate(contact)
 
 

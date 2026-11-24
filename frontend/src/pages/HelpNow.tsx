@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { api } from '../api/client.ts'
 import { Button } from '../components/Button.tsx'
+import { BitSays } from '../components/Bit.tsx'
 import { useSpeech } from '../hooks/useSpeech.ts'
 import { smsLink, whatsAppLink } from '../lib/shareLinks.ts'
 import { strings } from '../strings.ts'
@@ -32,6 +33,10 @@ export function HelpNow() {
   return (
     <div className="page-column">
       <h1>{strings.helpTitle}</h1>
+      <p className="page-lead">Stop. Breathe. Follow these steps in order.</p>
+      <BitSays mood="calm" size={72}>
+        <p>{strings.bitHelp}</p>
+      </BitSays>
       {isLoading ? <p>{strings.loading}</p> : null}
       {isError ? <p role="alert">{strings.offlineHelp}</p> : null}
       <ol className="numbered-steps">
@@ -39,16 +44,32 @@ export function HelpNow() {
           <li key={i}>{step}</li>
         ))}
       </ol>
-      <section className="stack">
+      <section className="page-section">
         <h2>{strings.helpWhoToContact}</h2>
-        {data?.who_to_contact.map((entry, i) => (
-          <div key={i}>
-            <p>
-              <strong>{entry.name}</strong>
-            </p>
-            <p>{entry.how}</p>
-          </div>
-        ))}
+        <div className="stack">
+          {data?.who_to_contact.map((entry, i) => (
+            <div className="panel" key={i}>
+              <p>
+                <strong>{entry.name}</strong>
+              </p>
+              <p>{entry.how}</p>
+              {entry.phone ? (
+                <p>
+                  <a href={`tel:${entry.phone.replace(/[^\d+]/g, '')}`}>{entry.phone}</a>
+                </p>
+              ) : null}
+              {entry.url ? (
+                <p>
+                  <a href={entry.url} target="_blank" rel="noopener noreferrer">
+                    Open official website
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="sticky-actions">
         <Link className="btn btn--danger btn--block" to="/family">
           {strings.helpTellFamily}
         </Link>
@@ -68,7 +89,7 @@ export function HelpNow() {
         >
           Send steps by WhatsApp
         </a>
-      </section>
+      </div>
     </div>
   )
 }

@@ -4,10 +4,10 @@
   justify-content: center;
   min-height: var(--target);
   min-width: var(--target);
-  padding: 0.75rem 1.25rem;
+  padding: 0.85rem 1.25rem;
   font: inherit;
   font-weight: 700;
-  border-radius: 6px;
+  border-radius: var(--radius);
   border: 2px solid transparent;
   cursor: pointer;
   text-decoration: none;
@@ -37,9 +37,19 @@
   width: 100%;
 }
 
+.btn--compact {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95em;
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  filter: none;
 }
 
 .form-field {
@@ -56,17 +66,19 @@
 .form-field select,
 .form-field textarea {
   font: inherit;
-  padding: 0.75rem;
+  padding: 0.85rem 1rem;
   border: 2px solid var(--border);
-  border-radius: 6px;
-  background: var(--paper);
+  border-radius: var(--radius);
+  background: var(--panel);
   color: var(--ink);
   min-height: var(--target);
+  width: 100%;
 }
 
 .form-field textarea {
-  min-height: 8rem;
+  min-height: 9rem;
   resize: vertical;
+  line-height: var(--line);
 }
 
 .form-field__error {
@@ -83,13 +95,15 @@
 .radio-option {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   min-height: var(--target);
+  padding: 0.35rem 0;
 }
 
 .radio-option input {
   width: 1.5rem;
   height: 1.5rem;
+  flex-shrink: 0;
 }
 
 .contact-list {
@@ -108,9 +122,30 @@
   align-items: center;
   justify-content: space-between;
   border: 2px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   padding: var(--gap);
   max-width: 42rem;
+  background: var(--panel);
+}
+
+.status-pill {
+  display: inline-block;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.25rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.status-pill--waiting {
+  border-color: var(--warn-border);
+  color: var(--warn-ink);
+  background: var(--warn-bg);
+}
+
+.status-pill--accepted {
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .note {
@@ -129,21 +164,27 @@
 
 .numbered-steps li {
   counter-increment: step;
-  padding-left: 3rem;
+  padding: var(--gap);
+  padding-left: 3.5rem;
   position: relative;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  max-width: 65ch;
 }
 
 .numbered-steps li::before {
   content: counter(step);
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 0.75rem;
+  top: 0.85rem;
   font-weight: 700;
   border: 2px solid var(--ink);
-  border-radius: 6px;
+  border-radius: var(--radius);
   min-width: 2rem;
   text-align: center;
   padding: 0.15rem 0.35rem;
+  background: var(--paper);
 }
 
 .red-flag-list {
@@ -151,5 +192,163 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
+  gap: 0.75rem;
+}
+
+.red-flag-list li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  max-width: 65ch;
+}
+
+.message-source {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  background: var(--paper);
+  max-width: 65ch;
+}
+
+/* ---------- Bit, the mascot ---------- */
+.bit {
+  display: block;
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.bit-says {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.9rem;
+}
+
+.bit-says__bubble {
+  position: relative;
+  flex: 1;
+  background: var(--bit-bubble);
+  border: 1px solid var(--bit-bubble-edge);
+  border-radius: 12px;
+  padding: 0.75rem 1.05rem 0.85rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 1px 2px rgba(20, 32, 26, 0.06);
+}
+
+/* Tail of the speech bubble, pointing at Bit */
+.bit-says__bubble::before,
+.bit-says__bubble::after {
+  content: "";
+  position: absolute;
+  left: -9px;
+  bottom: 18px;
+  border-style: solid;
+  border-width: 8px 9px 8px 0;
+  border-color: transparent var(--bit-bubble-edge) transparent transparent;
+}
+
+.bit-says__bubble::after {
+  left: -7px;
+  border-color: transparent var(--bit-bubble) transparent transparent;
+}
+
+.bit-says__name {
+  font-weight: 700;
+  font-size: 0.85em;
+  color: var(--primary);
+}
+
+.bit-says__text p + p {
+  margin-top: 0.35rem;
+}
+
+.bit-says--worried .bit-says__bubble {
+  --bit-bubble: var(--bit-bubble-warn);
+  --bit-bubble-edge: var(--bit-bubble-warn-edge);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bit {
+    animation: bit-bob 3.2s ease-in-out infinite;
+  }
+
+  .bit__eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bit-blink 5s infinite;
+  }
+
+  .bit--worried {
+    animation-duration: 1.4s;
+  }
+}
+
+@keyframes bit-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes bit-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.15); }
+}
+
+@media (max-width: 30rem) {
+  .bit-says {
+    gap: 0.6rem;
+  }
+
+  .bit-says .bit {
+    width: 64px;
+    height: 72px;
+  }
+}
+
+/* ---------- Number tags ---------- */
+.num-tag {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn--primary .num-tag,
+.btn--danger .num-tag {
+  background: var(--on-primary);
+  color: var(--ink);
+}
+
+.btn--numbered {
+  justify-content: flex-start;
+  gap: 0.9rem;
+  text-align: left;
+}
+
+.step-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.risk-box__label {
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.risk-box__value {
+  font-size: 1.35em;
+  line-height: 1.2;
 }

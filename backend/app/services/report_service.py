@@ -58,7 +58,8 @@ def weekly_summary(db: Session, area: str | None = None) -> dict:
     settings = get_settings()
     since = datetime.now(UTC) - timedelta(days=7)
     stmt = select(Report.scam_type, func.count()).where(Report.created_at >= since)
-    if area:
+    # "generic" / empty = all areas (matches frontend "All areas").
+    if area and area not in {"generic", "all", "*"}:
         stmt = stmt.where(Report.area == area)
     stmt = stmt.group_by(Report.scam_type).order_by(func.count().desc())
     rows = db.execute(stmt).all()

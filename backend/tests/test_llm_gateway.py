@@ -36,6 +36,7 @@ def test_retry_then_success(mock_client_factory):
     with patch("app.services.llm_gateway.get_settings") as gs:
         settings = gs.return_value
         settings.demo_mode = False
+        settings.llm_provider = "groq"
         settings.groq_api_key = "k"
         settings.groq_chat_model = "primary"
         settings.groq_fast_model = "fast"
@@ -62,6 +63,7 @@ def test_fallback_model(mock_client_factory):
     with patch("app.services.llm_gateway.get_settings") as gs:
         settings = gs.return_value
         settings.demo_mode = False
+        settings.llm_provider = "groq"
         settings.groq_api_key = "k"
         settings.groq_chat_model = "primary"
         settings.groq_fast_model = "fast"
@@ -90,6 +92,7 @@ def test_json_repair_path(mock_client_factory):
     with patch("app.services.llm_gateway.get_settings") as gs:
         settings = gs.return_value
         settings.demo_mode = False
+        settings.llm_provider = "groq"
         settings.groq_api_key = "k"
         settings.groq_chat_model = "m"
         settings.groq_fast_model = ""

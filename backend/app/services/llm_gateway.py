@@ -1,4 +1,7 @@
-"""Single gateway for Groq API calls. No hardcoded model IDs."""
+"""Single gateway for LLM calls.
+
+Primary provider is Unorouter (OpenAI-compatible). Groq is kept as a fallback
+provider. Model IDs come from settings only."""
 
 from __future__ import annotations
 
@@ -14,16 +17,20 @@ from typing import Any, TypeVar
 
 import httpx
 from groq import Groq
+from openai import OpenAI
 from pydantic import BaseModel, ValidationError
 
 from app.config import Settings, get_settings
 from app.pathutil import FIXTURES_DIR, PROMPTS_ROOT
+from app.services.circuit import llm_circuit
 
 logger = logging.getLogger(__name__)
 
 TIMEOUT_S = 20.0
 MAX_RETRIES = 4
 BACKOFF_BASE = 0.5
+MAX_SLEEP_S = 4.0  # never honour a long Retry-After; the user is waiting
+TOTAL_BUDGET_S = 45.0  # whole call (all models and retries) gives up after this
 CACHE_SIZE = 64
 
 T = TypeVar("T", bound=BaseModel)
@@ -33,10 +40,33 @@ _cache_lock = Lock()
 _analyzer_cache: OrderedDict[str, str] = OrderedDict()
 
 
-def _client(settings: Settings) -> Groq | None:
+def active_provider(settings: Settings) -> str:
+    """Return "unorouter" or "groq". "auto" prefers Unorouter when its key is set."""
+    choice = str(settings.llm_provider or "auto").strip().lower()
+    if choice in ("unorouter", "groq"):
+        return choice
+    return "unorouter" if settings.unorouter_api_key else "groq"
+
+
+def provider_key(settings: Settings) -> str:
+    if active_provider(settings) == "unorouter":
+        return settings.unorouter_api_key
+    return settings.groq_api_key
+
+
+def _client(settings: Settings) -> Any | None:
+    if active_provider(settings) == "unorouter":
+        if not settings.unorouter_api_key:
+            return None
+        return OpenAI(
+            api_key=settings.unorouter_api_key,
+            base_url=settings.unorouter_base_url,
+            timeout=TIMEOUT_S,
+            max_retries=0,
+        )
     if not settings.groq_api_key:
         return None
-    return Groq(api_key=settings.groq_api_key, timeout=TIMEOUT_S)
+    return Groq(api_key=settings.groq_api_key, timeout=TIMEOUT_S, max_retries=0)
 
 
 def _get_semaphore(settings: Settings) -> Semaphore:
@@ -55,48 +85,86 @@ def _retry_after_seconds(headers: Any, attempt: int) -> float:
             raw = None
     if raw:
         try:
-            return float(raw)
+            return max(0.0, min(float(raw), MAX_SLEEP_S))
         except ValueError:
             pass
-    return BACKOFF_BASE * (2**attempt) + random.uniform(0, 0.25)
+    return min(MAX_SLEEP_S, BACKOFF_BASE * (2**attempt) + random.uniform(0, 0.25))
 
 
 def check_models_on_startup(settings: Settings | None = None) -> dict[str, Any]:
     settings = settings or get_settings()
     if settings.demo_mode:
         return {"ok": True, "demo": True}
-    if not settings.groq_api_key:
-        logger.warning("GROQ_API_KEY missing; real AI calls will fail")
-        return {"ok": False, "error": "missing_api_key"}
-    configured = {
-        "chat": settings.groq_chat_model,
-        "fast": settings.groq_fast_model,
-        "vision": settings.groq_vision_model,
-        "stt": settings.groq_stt_model,
-    }
+    provider = active_provider(settings)
+    key = provider_key(settings)
+    if not key:
+        logger.warning("%s API key missing; real AI calls will fail", provider)
+        return {"ok": False, "provider": provider, "error": "missing_api_key"}
+    if provider == "unorouter":
+        configured = {
+            "chat": settings.unorouter_chat_model,
+            "fast": settings.unorouter_fast_model,
+            "vision": settings.unorouter_vision_model,
+            "stt": settings.unorouter_stt_model,
+        }
+        models_url = settings.unorouter_base_url.rstrip("/") + "/models"
+    else:
+        configured = {
+            "chat": settings.groq_chat_model,
+            "fast": settings.groq_fast_model,
+            "vision": settings.groq_vision_model,
+            "stt": settings.groq_stt_model,
+        }
+        models_url = "https://api.groq.com/openai/v1/models"
     try:
         with httpx.Client(timeout=TIMEOUT_S) as http:
-            r = http.get(
-                "https://api.groq.com/openai/v1/models",
-                headers={"Authorization": f"Bearer {settings.groq_api_key}"},
-            )
+            r = http.get(models_url, headers={"Authorization": f"Bearer {key}"})
             r.raise_for_status()
             ids = {m.get("id") for m in r.json().get("data", [])}
         missing = {role: mid for role, mid in configured.items() if mid and mid not in ids}
         if missing:
             logger.warning("configured_models_missing %s", missing)
-        return {"ok": not missing, "missing": missing, "available_count": len(ids)}
+        return {
+            "ok": not missing,
+            "provider": provider,
+            "missing": missing,
+            "available_count": len(ids),
+        }
     except Exception as exc:  # noqa: BLE001
-        logger.warning("groq_startup_check_failed error=%s", type(exc).__name__)
-        return {"ok": False, "error": type(exc).__name__}
+        logger.warning("llm_startup_check_failed provider=%s error=%s", provider, type(exc).__name__)
+        return {"ok": False, "provider": provider, "error": type(exc).__name__}
 
 
 def _models_chain(settings: Settings, role: str) -> list[str]:
+    if active_provider(settings) == "unorouter":
+        chat, fast, vision = (
+            settings.unorouter_chat_model,
+            settings.unorouter_fast_model,
+            settings.unorouter_vision_model,
+        )
+    else:
+        chat, fast, vision = (
+            settings.groq_chat_model,
+            settings.groq_fast_model,
+            settings.groq_vision_model,
+        )
     if role == "fast":
-        return [m for m in (settings.groq_fast_model, settings.groq_chat_model) if m]
-    if role == "vision":
-        return [m for m in (settings.groq_vision_model, settings.groq_chat_model) if m]
-    return [m for m in (settings.groq_chat_model, settings.groq_fast_model) if m]
+        order = (fast, chat)
+    elif role == "vision":
+        # A text-only model cannot read an image, so never fall back to chat here.
+        order = (vision,)
+    else:
+        order = (chat, fast)
+    seen: list[str] = []
+    for m in order:
+        if m and m not in seen:
+            seen.append(m)
+    return seen
+
+
+def vision_available(settings: Settings | None = None) -> bool:
+    settings = settings or get_settings()
+    return bool(_models_chain(settings, "vision"))
 
 
 def _parse_json_content(raw: str) -> dict[str, Any] | list[Any]:
@@ -136,11 +204,14 @@ def chat_structured(
 
     models = _models_chain(settings, role)
     if not models:
-        raise RuntimeError("No Groq models configured. Set GROQ_CHAT_MODEL or use DEMO_MODE=true.")
+        raise RuntimeError("No AI models configured. Set UNOROUTER_API_KEY or use DEMO_MODE=true.")
+
+    if not llm_circuit.allow():
+        raise RuntimeError("The checker is busy. Please try again in a minute.")
 
     client = _client(settings)
     if client is None:
-        raise RuntimeError("GROQ_API_KEY is not set.")
+        raise RuntimeError("No AI provider key is set (UNOROUTER_API_KEY or GROQ_API_KEY).")
 
     schema = schema_model.model_json_schema()
     last_err: Exception | None = None
@@ -149,8 +220,11 @@ def chat_structured(
         "Return JSON only that matches this schema:\n" + json.dumps(schema)[:4000]
     )
 
+    deadline = time.monotonic() + TOTAL_BUDGET_S
     for model in models:
         for attempt in range(MAX_RETRIES):
+            if time.monotonic() >= deadline:
+                break
             started = time.monotonic()
             try:
                 with sem:
@@ -215,6 +289,7 @@ def chat_structured(
                         _analyzer_cache.move_to_end(cache_key)
                         while len(_analyzer_cache) > CACHE_SIZE:
                             _analyzer_cache.popitem(last=False)
+                llm_circuit.record_success()
                 return result
             except Exception as exc:  # noqa: BLE001
                 last_err = exc
@@ -226,17 +301,16 @@ def chat_structured(
                     status or "error",
                 )
                 if status in (429, 500, 502, 503, 504) or "rate" in str(exc).lower():
+                    llm_circuit.record_failure()
                     headers = getattr(getattr(exc, "response", None), "headers", {})
                     time.sleep(_retry_after_seconds(headers, attempt))
                     continue
+                llm_circuit.record_failure()
                 break
         logger.warning("llm_fallback model=%s failed", model)
 
-    raise RuntimeError(
-        "The checker is busy. Please try again in a minute."
-        if last_err
-        else "The checker is busy. Please try again in a minute."
-    )
+    logger.warning("llm_all_models_failed last_error=%s", type(last_err).__name__)
+    raise RuntimeError("The checker is busy. Please try again in a minute.")
 
 
 def chat_text(
@@ -251,10 +325,12 @@ def chat_text(
         return "I need you to stay on the line. This is urgent."
     models = _models_chain(settings, role)
     if not models:
-        raise RuntimeError("No Groq chat models configured.")
+        raise RuntimeError("No AI chat models configured.")
     client = _client(settings)
     if client is None:
-        raise RuntimeError("GROQ_API_KEY is not set.")
+        raise RuntimeError("No AI provider key is set (UNOROUTER_API_KEY or GROQ_API_KEY).")
+    if not llm_circuit.allow():
+        raise RuntimeError("The checker is busy. Please try again in a minute.")
     sem = _get_semaphore(settings)
     last_err: Exception | None = None
     for model in models:

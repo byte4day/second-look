@@ -12,18 +12,30 @@ A CHI 2026 study (ROLESafe, 144 older adults) found that practising as the targe
 
 Tone rule: never shame. Scammers are professionals. Stopping is always a good move.
 
+## Watch the 50-second demo
+
+[`docs/scam-shield-hackathon.mp4`](docs/scam-shield-hackathon.mp4): Bit, our mascot, walks through Margaret's real-life case, from a fake "account locked" text to every feature, using the live app.
+
+## Meet Bit
+
+Bit is Scam Shield's pixel-art shield mascot. Bit greets people on the home screen, reacts to each result (happy, calm, worried, thinking) and gives one plain tip at a time. Everything Bit says is real text, so screen readers read it too. Home choices are numbered 1 to 5, so a family member can say "press number 1" over the phone.
+
 ## Features
 
 1. **Practise** — pretend scammer chat (and optional voice), then a debrief with marked moments.  
-   ![screenshot placeholder: Practise](docs/screenshots/practise.png)
+   ![Practise](docs/screenshots/practise.png)
 2. **Check a message** — paste text or photograph a letter; get a risk label, highlights, and next steps.  
-   ![screenshot placeholder: Check](docs/screenshots/check.png)
+   ![Check](docs/screenshots/check.png)
 3. **Help now** — calm steps for "I think I am being scammed right now".  
-   ![screenshot placeholder: Help now](docs/screenshots/help.png)
+   ![Help now](docs/screenshots/help.png)
 4. **My family** — trusted contacts with invitation consent, email alerts, and share-link fallback.  
-   ![screenshot placeholder: Family](docs/screenshots/family.png)
+   ![Family](docs/screenshots/family.png)
 5. **Scams near me** — anonymous reports and a simple weekly area summary.  
-   ![screenshot placeholder: Scams near me](docs/screenshots/scams.png)
+   ![Scams near me](docs/screenshots/scams.png)
+
+Home screen:
+
+![Home](docs/screenshots/home.png)
 
 ## How it works
 
@@ -34,12 +46,13 @@ flowchart LR
   API --> GW[LLM gateway]
   API --> DB[(SQLite or Postgres)]
   API --> Mail[Email console SMTP or Resend]
-  GW --> Groq[Groq chat vision STT]
+  GW --> Uno[Unorouter chat vision STT]
+  GW -.fallback.-> Groq[Groq]
   GW --> Fixtures[DEMO fixtures]
   API --> Safety[Safety and PII scrubber]
 ```
 
-- **LLM gateway** — only module that talks to Groq; retries, fallbacks, structured validation, DEMO fixtures.
+- **LLM gateway** — only module that talks to the AI provider (Unorouter, Groq fallback); retries, fallbacks, structured validation, DEMO fixtures.
 - **Analyzer** — text and image checks with exact quote verification.
 - **Scenario / drills** — practice sessions, helper mode, debrief.
 - **Safety / PII** — hide real secrets, strip real links/numbers, scrub reports.
@@ -88,15 +101,18 @@ Docker:
 docker compose up --build
 ```
 
-## Using real AI with Groq (free)
+## Using real AI with Unorouter
 
-1. Create a Groq account and API key (free tier, no credit card for the free tier at time of writing — verify on Groq’s site).
+Scam Shield's AI runs through the [Unorouter](https://api.unorouter.com) gateway (OpenAI-compatible), as the hackathon requires. Groq stays as an optional fallback provider.
+
+1. Get a Unorouter API key.
 2. Set in `.env`:
    - `DEMO_MODE=false`
-   - `GROQ_API_KEY=...`
-   - `GROQ_CHAT_MODEL`, `GROQ_FAST_MODEL`, `GROQ_VISION_MODEL`, `GROQ_STT_MODEL` from the Groq console models page (IDs change; never hardcode in source).
-3. Run `python scripts/check_groq.py` to list available IDs and warn on missing ones.
-4. On HTTP 429, wait and retry; free-tier limits are per organisation **and** per model, so judges testing at once may hit them. The app falls back to the fast model, then shows plain text: "The checker is busy. Please try again in a minute."
+   - `UNOROUTER_API_KEY=...`
+   - Models default to `gemini-2.5-flash` (chat, vision), `gemini-2.5-flash:free` (fast fallback) and `whisper-large-v3-turbo:free` (speech to text). Change them with `UNOROUTER_*_MODEL`.
+3. Run `python scripts/check_llm.py` to confirm the key works and every configured model exists.
+4. `LLM_PROVIDER=auto` (default) uses Unorouter whenever its key is set, otherwise Groq (`GROQ_*` variables). Force one with `LLM_PROVIDER=unorouter` or `groq`.
+5. On HTTP 429 the gateway backs off, falls back to the fast model, then to the local rule checker, and shows: "The checker is busy. Please try again in a minute."
 
 ## Environment variables
 
@@ -106,8 +122,15 @@ docker compose up --build
 | `DATABASE_URL` | `sqlite:///./scam_shield.db` | no | SQLite or Postgres URL |
 | `CORS_ORIGINS` | `http://localhost:5173` | no | Allowed frontends |
 | `JWT_SECRET` | long random string | yes in prod | Signs auth tokens |
-| `REGION_DEFAULT` | `generic` | no | Help now pack |
-| `GROQ_API_KEY` | | if not demo | Groq key |
+| `REGION_DEFAULT` | `uk-example` | no | Help now pack (`generic` or `uk-example`) |
+| `LLM_PROVIDER` | `auto` | no | `auto` \| `unorouter` \| `groq` |
+| `UNOROUTER_API_KEY` | | if not demo | Unorouter key (primary AI) |
+| `UNOROUTER_BASE_URL` | `https://api.unorouter.com/v1` | no | Gateway URL |
+| `UNOROUTER_CHAT_MODEL` | `gemini-2.5-flash` | no | Main model |
+| `UNOROUTER_FAST_MODEL` | `gemini-2.5-flash:free` | no | Fallback model |
+| `UNOROUTER_VISION_MODEL` | `gemini-2.5-flash` | no | Photo check when OCR finds no text |
+| `UNOROUTER_STT_MODEL` | `whisper-large-v3-turbo:free` | no | Voice practice speech to text |
+| `GROQ_API_KEY` | | no | Optional fallback provider |
 | `GROQ_CHAT_MODEL` | | if not demo | Chat model id |
 | `GROQ_FAST_MODEL` | | no | Fallback chat model |
 | `GROQ_VISION_MODEL` | | if images live | Vision model id |
@@ -173,16 +196,16 @@ python scripts/eval_safety.py
 1. **Frontend (Vercel):** import the `frontend` folder, set `VITE_API_URL` to your API origin, deploy.
 2. **Backend (Render / Railway):** deploy `backend`, start `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
 3. **Database:** attach Postgres; set `DATABASE_URL`; run Alembic migrations (`cd backend && alembic upgrade head`) or rely on startup `create_all` for demos.
-4. Set `DEMO_MODE=false`, `JWT_SECRET`, `CORS_ORIGINS`, Groq and email vars.
+4. Set `DEMO_MODE=false`, `JWT_SECRET`, `CORS_ORIGINS`, `UNOROUTER_API_KEY` and email vars.
 5. Post-deploy checklist: health endpoint, analyze in demo then live, invitation email, CORS from the Vercel origin, Help now region pack.
 
 ## Troubleshooting
 
 | Symptom | What to try |
 | --- | --- |
-| Groq 429 | Wait; use DEMO_MODE; check per-model limits |
+| Unorouter / Groq 429 | Wait; use DEMO_MODE; check per-model limits |
 | Invalid JSON from model | Gateway repairs once; then shows busy message |
-| Model not found | Run `scripts/check_groq.py` and update env IDs |
+| Model not found | Run `scripts/check_llm.py` and update env IDs |
 | Photo too large | Client downscales to ≤1600 px JPEG |
 | Microphone blocked | Browser permission; Record button hidden if unsupported |
 | iPhone push silent | Needs Add to Home Screen (iOS 16.4+); use email/share links |
@@ -192,14 +215,14 @@ python scripts/eval_safety.py
 
 ### TODO placeholders (do not invent numbers)
 
-- Region packs: every official reporting phone/URL is marked `TODO: add verified number from official source` or `TODO: add verified reporting link from official source` in `backend/app/data/regions/*.json`.
-- Screenshot image files under `docs/screenshots/` are placeholders.
+- Region packs ship verified contacts: UK Action Fraud `0300 123 2040`, Police Scotland `101`, and FTC ReportFraud for the generic pack (`backend/app/data/regions/*.json`). Default region is `uk-example`.
+- Screenshots live under `docs/screenshots/` (home, check, practise, help, family, scams).
 
 ### Day-before checks
 
 - [ ] `make check` passes
 - [ ] `DEMO_MODE=true` walkthrough of Practise + Check + Help now
-- [ ] Optional Groq key path verified with `scripts/check_groq.py`
+- [ ] Unorouter key path verified with `scripts/check_llm.py`
 - [ ] Family invite accept flow with console email
 - [ ] High contrast and Extra large text
 
@@ -240,8 +263,8 @@ Licence: [MIT](LICENSE). Built for Code for Change / Devpost.
 
 **Built:** full FastAPI + React app with DEMO_MODE fixtures, Check, Practise (experience + helper), Help now, Family double opt-in, Scams near me, optional voice STT, optional push stubs, accessibility controls, tests, and docs.
 
-**Stubbed / light:** live Groq depends on env model IDs; Web Push needs VAPID keys; region hotlines are TODO placeholders; screenshot PNGs not committed; older-adult live test not yet run.
+**Stubbed / light:** live AI depends on Unorouter model IDs; Web Push needs VAPID keys; region hotlines are TODO placeholders; older-adult live test not yet run.
 
-**Risky for demo day:** Groq free-tier 429s under parallel judging; speechSynthesis voice set differs by OS; iPhone push only after Home Screen install.
+**Risky for demo day:** free-tier model 429s under parallel judging; speechSynthesis voice set differs by OS; iPhone push only after Home Screen install.
 
 **Three things to check by hand before demo day:** (1) full Practise hang-up debrief in DEMO_MODE, (2) Check result highlights on the sample bank text, (3) family invite accept + console email alert.

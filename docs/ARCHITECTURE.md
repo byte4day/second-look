@@ -9,7 +9,8 @@ flowchart LR
   API --> GW[LLM gateway]
   API --> DB[(SQLite / Postgres)]
   API --> Mail[Email console or SMTP or Resend]
-  GW --> Groq[Groq chat vision STT]
+  GW --> Uno[Unorouter chat vision STT]
+  GW -.fallback.-> Groq[Groq]
   GW --> Fixtures[Demo fixtures]
   API --> Safety[Safety and PII scrubber]
 ```
@@ -25,7 +26,7 @@ flowchart LR
 
 | Service | Role |
 | --- | --- |
-| LLM gateway | Only Groq client; retries, fallbacks, structured output validation, DEMO fixtures |
+| LLM gateway | Only AI client (Unorouter primary, Groq fallback); retries, fallbacks, structured output validation, DEMO fixtures |
 | Analyzer | Text and image risk check with quote verification |
 | Scenario / drills | Pretend scammer and helper modes, debrief |
 | Safety | Strip real numbers/links, hide real PII, refuse how-to-scam |

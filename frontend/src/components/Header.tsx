@@ -1,8 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { strings } from '../strings.ts'
-
-const primary = 'btn btn--danger'
-const secondary = 'btn btn--secondary'
+import { Bit } from './Bit.tsx'
 
 export function Header() {
   const { pathname } = useLocation()
@@ -10,22 +8,25 @@ export function Header() {
 
   return (
     <header className="site-header">
-      <Link to="/" className="site-header__brand">
-        {strings.appName}
-      </Link>
-      <div className="site-header__actions">
-        <Link to="/help" className={primary}>
-          {strings.helpNow}
+      <div className="site-header__row">
+        <Link to="/" className="site-header__brand">
+          <Bit mood="calm" size={34} className="site-header__bit" />
+          <span>{strings.appName}</span>
         </Link>
-        <Link to="/settings" className={secondary}>
-          {strings.textSizeContrast}
-        </Link>
-        {!onHome ? (
-          <Link to="/" className={secondary}>
-            {strings.backToStart}
+        <div className="site-header__actions">
+          <Link to="/help" className="btn btn--danger">
+            {strings.helpNow}
           </Link>
-        ) : null}
+          <Link to="/settings" className="btn btn--secondary">
+            {strings.textSizeContrast}
+          </Link>
+        </div>
       </div>
+      {!onHome ? (
+        <div className="site-header__back">
+          <Link to="/">{strings.backToStart}</Link>
+        </div>
+      ) : null}
     </header>
   )
 }

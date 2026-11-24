@@ -9,15 +9,19 @@ def test_scenarios(client):
 
 
 def test_analyze_text_demo(client):
-    payload = {"text": "Your account locked. Read the 6-digit code."}
+    payload = {"text": "Your account locked. Share the one-time code. Do not tell anyone."}
     r = client.post("/api/analyze/text", json=payload)
     assert r.status_code == 200
-    assert r.json()["risk_level"] in {
-        "likely_scam",
-        "suspicious",
-        "probably_ok",
-        "cannot_tell",
-    }
+    body = r.json()
+    assert body["risk_level"] == "likely_scam"
+    assert body["reasons"]
+
+    ok = client.post(
+        "/api/analyze/text",
+        json={"text": "Thanks for lunch yesterday. See you on Sunday."},
+    )
+    assert ok.status_code == 200
+    assert ok.json()["risk_level"] == "probably_ok"
 
 
 def test_drill_flow(client):

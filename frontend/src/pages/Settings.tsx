@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { api, getToken, setToken } from '../api/client.ts'
+import { api, setToken } from '../api/client.ts'
 import { Button } from '../components/Button.tsx'
 import { FormField, TextInput } from '../components/FormField.tsx'
 import {
@@ -8,22 +8,23 @@ import {
   type TextSize,
   usePreferences,
 } from '../hooks/usePreferences.ts'
+import { useToken } from '../hooks/useToken.ts'
 import { strings } from '../strings.ts'
 
+const CODE_SENT = 'We sent a six-digit code to your email. It may take a minute to arrive.'
+const DELETE_START = 'Delete my account and data'
+const DELETE_CHECK = 'Are you sure? This cannot be undone.'
+const KEEP_DATA = 'No, keep my account'
+const DELETE_YES = 'Yes, delete my account and data'
+
 export function Settings() {
-  const {
-    textSize,
-    contrast,
-    readAloud,
-    setTextSize,
-    setContrast,
-    setReadAloud,
-  } = usePreferences()
+  const { textSize, contrast, setTextSize, setContrast } = usePreferences()
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [authError, setAuthError] = useState<string | undefined>()
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const queryClient = useQueryClient()
-  const signedIn = Boolean(getToken())
+  const signedIn = Boolean(useToken())
 
   const me = useQuery({
     queryKey: ['me'],
@@ -50,14 +51,16 @@ export function Settings() {
   const deleteData = useMutation({
     mutationFn: () => api.deleteMe(),
     onSuccess: () => {
+      setConfirmDelete(false)
       setToken(null)
-      void queryClient.clear()
+      queryClient.clear()
     },
   })
 
   const signOut = () => {
     setToken(null)
-    void queryClient.clear()
+    setConfirmDelete(false)
+    queryClient.clear()
   }
 
   return (
@@ -102,14 +105,6 @@ export function Settings() {
           </label>
         ))}
       </fieldset>
-      <label className="radio-option">
-        <input
-          type="checkbox"
-          checked={readAloud}
-          onChange={(e) => setReadAloud(e.target.checked)}
-        />
-        {strings.settingsReadAloud}
-      </label>
       <section>
         <h2>{strings.settingsSignIn}</h2>
         {signedIn && me.data ? (
@@ -133,6 +128,11 @@ export function Settings() {
             >
               {strings.settingsRequestCode}
             </Button>
+            {requestCode.isSuccess ? (
+              <p className="note" role="status">
+                {CODE_SENT}
+              </p>
+            ) : null}
             <FormField id="code" label={strings.settingsCode}>
               <TextInput id="code" inputMode="numeric" value={code} onChange={(e) => setCode(e.target.value)} />
             </FormField>
@@ -149,10 +149,34 @@ export function Settings() {
       </section>
       {signedIn ? (
         <section>
-          <p>{strings.settingsDeleteConfirm}</p>
-          <Button variant="danger" block disabled={deleteData.isPending} onClick={() => deleteData.mutate()}>
-            {strings.settingsDeleteYes}
-          </Button>
+          {confirmDelete ? (
+            <div className="panel stack" role="group" aria-label={DELETE_CHECK}>
+              <p>{strings.settingsDeleteConfirm}</p>
+              <p>
+                <strong>{DELETE_CHECK}</strong>
+              </p>
+              <Button
+                variant="danger"
+                block
+                disabled={deleteData.isPending}
+                onClick={() => deleteData.mutate()}
+              >
+                {DELETE_YES}
+              </Button>
+              <Button variant="secondary" block onClick={() => setConfirmDelete(false)}>
+                {KEEP_DATA}
+              </Button>
+            </div>
+          ) : (
+            <Button variant="secondary" block onClick={() => setConfirmDelete(true)}>
+              {DELETE_START}
+            </Button>
+          )}
+          {deleteData.isError ? (
+            <p className="note" role="alert">
+              {deleteData.error.message}
+            </p>
+          ) : null}
         </section>
       ) : null}
     </div>

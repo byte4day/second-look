@@ -1,6 +1,6 @@
 {
   "id": "uk-example",
-  "label": "United Kingdom example pack",
+  "label": "United Kingdom",
   "help_now_steps": [
     "Stop talking to the person.",
     "Do not pay or share codes or passwords.",
@@ -11,21 +11,27 @@
   "who_to_contact": [
     {
       "name": "Your bank",
-      "how": "Use the phone number printed on the back of your bank card.",
+      "how": "Use the phone number printed on the back of your bank card. Do not use a number from the message or call.",
       "url": null,
       "phone": null
     },
     {
       "name": "Action Fraud (England, Wales, Northern Ireland)",
-      "how": "TODO: add verified number from official source",
-      "url": "TODO: add verified reporting link from official source",
-      "phone": "TODO: add verified number from official source"
+      "how": "Report fraud and cyber crime. Open 24 hours.",
+      "url": "https://www.actionfraud.police.uk/",
+      "phone": "0300 123 2040"
     },
     {
-      "name": "Police Scotland (Scotland)",
-      "how": "TODO: add verified number from official source",
-      "url": "TODO: add verified reporting link from official source",
-      "phone": "TODO: add verified number from official source"
+      "name": "Police Scotland",
+      "how": "For fraud in Scotland, contact Police Scotland. Use 999 only if someone is in immediate danger.",
+      "url": "https://www.scotland.police.uk/",
+      "phone": "101"
+    },
+    {
+      "name": "A trusted family member or neighbour",
+      "how": "Tell them what happened before you send money or share codes.",
+      "url": null,
+      "phone": null
     }
   ]
 }

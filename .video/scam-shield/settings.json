@@ -1,0 +1,13 @@
+{
+  "slug": "scam-shield",
+  "engine": "remotion",
+  "aspect": "16:9",
+  "durationSec": 55,
+  "researchDepth": "medium",
+  "fps": 30,
+  "format": "explainer",
+  "captionLang": "en",
+  "productUrl": "http://127.0.0.1:5173",
+  "apiUrl": "http://127.0.0.1:8000",
+  "createdAt": "2026-11-22T15:44:08.821Z"
+}

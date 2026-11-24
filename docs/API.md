@@ -6,8 +6,9 @@ Errors use `{ "error": { "code": "...", "message_plain": "..." } }`.
 
 | Method | Path | Notes |
 | --- | --- | --- |
-| GET | `/api/health` | Liveness |
-| GET | `/api/health/groq` | Model check status |
+| GET | `/api/health` | Liveness + dependency checks (`database`, `ocr`, region pack) |
+| GET | `/api/health/ready` | Readiness probe (DB + AI provider key when not DEMO) |
+| GET | `/api/health/llm` | Active provider and model check (`/api/health/groq` kept as alias) |
 | POST | `/api/auth/request-code` | Email a 6-digit code |
 | POST | `/api/auth/verify-code` | Exchange code for JWT |
 | GET | `/api/me` | Current user |
@@ -17,7 +18,8 @@ Errors use `{ "error": { "code": "...", "message_plain": "..." } }`.
 | POST | `/api/drills/{id}/turns` | Send a user turn |
 | POST | `/api/drills/{id}/finish` | Debrief |
 | POST | `/api/analyze/text` | Check pasted text |
-| POST | `/api/analyze/image` | Check a photo (base64) |
+| POST | `/api/analyze/ocr` | Extract text from a photo (base64); used to auto-fill Check |
+| POST | `/api/analyze/image` | Check a photo (OCR → text analyzer; optional vision if configured) |
 | POST | `/api/voice/transcribe` | Whisper STT |
 | GET/POST/DELETE | `/api/family` | Contacts (auth) |
 | POST | `/api/family/invitations/{token}/accept` | Accept invite |

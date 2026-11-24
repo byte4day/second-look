@@ -5,6 +5,7 @@ type Variant = 'primary' | 'secondary' | 'danger'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   block?: boolean
+  compact?: boolean
   children: ReactNode
   to?: never
 }
@@ -26,6 +27,7 @@ const variantClass: Record<Variant, string> = {
 export function Button({
   variant = 'secondary',
   block,
+  compact,
   className = '',
   children,
   type = 'button',
@@ -34,6 +36,7 @@ export function Button({
   const classes = [
     variantClass[variant],
     block ? 'btn--block' : '',
+    compact ? 'btn--compact' : '',
     className,
   ]
     .filter(Boolean)

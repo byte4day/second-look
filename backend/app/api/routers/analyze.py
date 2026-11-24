@@ -1,8 +1,14 @@
 from fastapi import APIRouter, HTTPException
 
-from app.schemas.analyze import AnalyzeImageRequest, AnalyzeResult, AnalyzeTextRequest
+from app.schemas.analyze import (
+    AnalyzeImageRequest,
+    AnalyzeResult,
+    AnalyzeTextRequest,
+    OcrRequest,
+    OcrResult,
+)
 from app.schemas.errors import error_detail
-from app.services import analyzer_service
+from app.services import analyzer_service, ocr_service
 
 router = APIRouter(prefix="/api/analyze", tags=["analyze"])
 
@@ -19,6 +25,12 @@ def analyze_text(body: AnalyzeTextRequest):
                 "The checker is busy. Please try again in a minute.",
             ),
         ) from None
+
+
+@router.post("/ocr", response_model=OcrResult)
+def extract_text(body: OcrRequest):
+    text = ocr_service.extract_text(body.image_base64, body.mime_type)
+    return OcrResult(text=text, found=bool(text.strip()))
 
 
 @router.post("/image", response_model=AnalyzeResult)

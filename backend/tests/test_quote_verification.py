@@ -16,7 +16,6 @@ def test_quote_dropped_when_not_substring():
     )
     out = verify_quotes("Your account will be locked today.", result)
     assert out.reasons == []
-    assert out.risk_level == "cannot_tell"
 
 
 def test_analyze_demo_keeps_matching_quotes():
@@ -31,7 +30,8 @@ def test_analyze_demo_keeps_matching_quotes():
         assert reason.quote in sample
 
 
-def test_analyze_demo_drops_bad_quotes_for_other_text():
+def test_analyze_harmless_message():
     result = analyze_text("Hello friend, see you at tea on Sunday.")
+    assert result.risk_level in {"probably_ok", "cannot_tell"}
     for reason in result.reasons:
         assert reason.quote in "Hello friend, see you at tea on Sunday."

@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "a11y": "node scripts/a11y_session.mjs",
     "lint": "oxlint src",
     "preview": "vite preview"
   },
@@ -33,6 +34,7 @@
     "jsdom": "^31.0.1",
     "leaflet": "^1.9.4",
     "oxlint": "^1.90.0",
+    "playwright-core": "^1.65.1",
     "react-leaflet": "^5.0.0",
     "tsx": "^4.23.15",
     "typescript": "~5.8.0",

@@ -31,8 +31,8 @@ export function LocalBannerHost() {
 
   useEffect(() => {
     const handler = (e: Event) => {
-      const detail = (e as CustomEvent<string>).detail
-      setMessage(detail)
+      const detail = (e as CustomEvent<string | null>).detail
+      setMessage(detail || null)
     }
     window.addEventListener('scam-shield-banner', handler)
     return () => window.removeEventListener('scam-shield-banner', handler)

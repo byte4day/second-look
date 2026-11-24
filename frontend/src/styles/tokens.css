@@ -1,22 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+
 :root {
-  --paper: #FAF7F0;
-  --ink: #1B1B1B;
-  --ink-muted: #404040;
-  --primary: #0B4F9C;
+  /* Civic trust leaflet: cool paper, deep ink, clear action blue */
+  --paper: #F3F5F2;
+  --ink: #14201A;
+  --ink-muted: #2A3A32;
+  --primary: #0A4D8C;
   --on-primary: #FFFFFF;
-  --danger: #A11A1A;
+  --danger: #9B1C1C;
   --on-danger: #FFFFFF;
-  --success: #1B5E31;
-  --warn-bg: #FFF1C2;
-  --warn-ink: #4A3200;
-  --warn-border: #7A5200;
-  --border: #595959;
-  --highlight: #FFE79A;
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --success: #145A32;
+  --warn-bg: #FFF4CC;
+  --warn-ink: #3D2E00;
+  --warn-border: #6B4E00;
+  --border: #3A4550;
+  --highlight: #FFE066;
+  --panel: #FFFFFF;
+  --shield: #0A4D8C;
+  --font: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+  --font-display: "Source Serif 4", "Times New Roman", serif;
   --text-base: 1.25rem;
-  --line: 1.6;
+  --line: 1.65;
   --gap: 1rem;
+  --gap-section: 2rem;
   --target: 3.5rem;
+  --radius: 4px;
+
+  /* Bit, the mascot */
+  --bit-outline: #14201A;
+  --bit-rim: #E8B931;
+  --bit-body: #0A4D8C;
+  --bit-shine: #4F8FD1;
+  --bit-face: #FFFFFF;
+  --bit-cheek: #F29CA3;
+  --bit-sweat: #8EC5F2;
+  --tag-bg: #0A4D8C;
+  --tag-ink: #FFFFFF;
+  --bit-bubble: #EEF4FB;
+  --bit-bubble-edge: #B9CEE6;
+  --bit-bubble-warn: #FCEFEF;
+  --bit-bubble-warn-edge: #E3B4B4;
 }
 
 [data-contrast="high"] {
@@ -26,4 +49,18 @@
   --primary: #0000CC;
   --danger: #B00000;
   --border: #000000;
+  --panel: #FFFFFF;
+  --shield: #0000CC;
+  --warn-bg: #FFFFFF;
+  --warn-ink: #000000;
+  --warn-border: #000000;
+  --highlight: #FFFF00;
+  --bit-outline: #000000;
+  --bit-body: #0000CC;
+  --bit-shine: #0000CC;
+  --tag-bg: #000000;
+  --bit-bubble: #FFFFFF;
+  --bit-bubble-edge: #000000;
+  --bit-bubble-warn: #FFFFFF;
+  --bit-bubble-warn-edge: #B00000;
 }

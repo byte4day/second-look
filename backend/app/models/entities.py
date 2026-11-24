@@ -17,8 +17,12 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    contacts: Mapped[list[FamilyContact]] = relationship(back_populates="user")
-    push_subscriptions: Mapped[list[PushSubscription]] = relationship(back_populates="user")
+    contacts: Mapped[list[FamilyContact]] = relationship(
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
+    )
+    push_subscriptions: Mapped[list[PushSubscription]] = relationship(
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
+    )
 
 
 class FamilyContact(Base):
@@ -32,7 +36,9 @@ class FamilyContact(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     user: Mapped[User] = relationship(back_populates="contacts")
-    invitation: Mapped[Invitation | None] = relationship(back_populates="contact", uselist=False)
+    invitation: Mapped[Invitation | None] = relationship(
+        back_populates="contact", uselist=False, cascade="all, delete-orphan", passive_deletes=True
+    )
 
 
 class Invitation(Base):

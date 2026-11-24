@@ -1,0 +1,6 @@
+Scam Shield explainer (v5), 2026-11-24
+Voice: Kokoro-82M TTS (open weights, Apache-2.0, https://github.com/hexgrad/kokoro) via kokoro-onnx, voice af_heart. Lines in vo.py.
+Audio: voice only, no music or instruments. Click sounds synthesised in mix.py.
+Footage: real Playwright captures of the running app (DEMO_MODE=true) in cap/, made by capture.mjs.
+Fonts: Atkinson Hyperlegible (OFL, Braille Institute), Source Serif 4 (OFL, Adobe), JetBrains Mono (OFL).
+Mascot: Bit, drawn for Scam Shield (frontend/src/components/Bit.tsx).
