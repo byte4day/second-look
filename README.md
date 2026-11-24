@@ -68,7 +68,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 Requirements: Python 3.11+, Node 20+, Make. Docker optional.
 
 ```bash
-git clone <your-repo-url> scam-shield
+git clone https://github.com/byte4day/second-look.git scam-shield
 cd scam-shield
 cp .env.example .env
 # DEMO_MODE=true is already the default
@@ -82,7 +82,7 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 uvicorn app.main:app --reload --port 8000
 
-# Frontend (new terminal)
+# Frontend (new terminal, from the repo root)
 cd frontend
 npm install --legacy-peer-deps
 npm run dev
@@ -150,7 +150,7 @@ Full template: [.env.example](.env.example).
 
 ## Using the app
 
-- **Home** — four large buttons for the main tasks.
+- **Home** — five large numbered buttons (1 to 5) for the main tasks, with Bit giving one tip.
 - **Check** — paste or photo, wait for plain "Checking…" text, then read the result page.
 - **Practise** — pick scenario, difficulty, Be the target or Help the victim; hang up for debrief.
 - **Help now** — numbered steps and who to contact from the region pack.
@@ -182,7 +182,7 @@ See [docs/SAFETY.md](docs/SAFETY.md). Guardrails on the scammer persona, fiction
 
 ## Accessibility
 
-Design targets AAA-oriented contrast and 56 px targets, skip link, visible focus, no animation, plain language. Automated axe and contrast tests ship with the repo. Older-adult live test: **not yet completed** — see [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+Design targets AAA-oriented contrast and 56 px targets, skip link, visible focus, plain language. Bit's small idle motion only runs when the device allows motion (`prefers-reduced-motion` turns it off). Automated axe and contrast tests ship with the repo. Older-adult live test: **not yet completed** — see [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
 
 ## Testing
 
@@ -213,34 +213,24 @@ python scripts/eval_safety.py
 | iPhone push silent | Needs Add to Home Screen (iOS 16.4+); use email/share links |
 | Emails missing | `EMAIL_BACKEND=console` prints to server log in demo |
 
-## Before you demo
-
-### TODO placeholders (do not invent numbers)
+## Before a live demo
 
 - Region packs ship verified contacts: UK Action Fraud `0300 123 2040`, Police Scotland `101`, and FTC ReportFraud for the generic pack (`backend/app/data/regions/*.json`). Default region is `uk-example`.
 - Screenshots live under `docs/screenshots/` (home, check, practise, help, family, scams).
-
-### Day-before checks
-
-- [ ] `make check` passes
-- [ ] `DEMO_MODE=true` walkthrough of Practise + Check + Help now
-- [ ] Unorouter key path verified with `scripts/check_llm.py`
-- [ ] Family invite accept flow with console email
-- [ ] High contrast and Extra large text
+- Quick checks: `make check` passes; `DEMO_MODE=true` walkthrough of Practise, Check and Help now; `scripts/check_llm.py` for the Unorouter key; family invite with console email; High contrast and Extra large text.
 
 ## Demo script
 
-See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (about 90 seconds).
+Live walkthrough script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (about 90 seconds). The recorded film is the 50-second [`docs/scam-shield-hackathon.mp4`](docs/scam-shield-hackathon.mp4).
 
-## Devpost submission checklist
+## Submission
 
-- [ ] Title: Scam Shield
-- [ ] Tagline: Practise hanging up. Check a message. Tell someone you trust.
-- [ ] Description (impact, how it works, DEMO_MODE)
-- [ ] Demo video link
-- [ ] Repo link
-- [ ] Build instructions (this README)
-- [ ] Team names
+Submitted to Code for Change / Devpost on 24 November 2026.
+
+- **Title:** Scam Shield
+- **Tagline:** Practise hanging up. Check a message. Tell someone you trust.
+- **Demo video:** [`docs/scam-shield-hackathon.mp4`](docs/scam-shield-hackathon.mp4)
+- **Repo:** https://github.com/byte4day/second-look
 
 ## Limitations and roadmap
 
@@ -256,7 +246,8 @@ See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (about 90 seconds).
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - [NCOA guidance on imposter scams](https://www.ncoa.org/)
 - U.S. Senate Special Committee on Aging fraud resources
-- [Groq docs](https://console.groq.com/docs)
+- [Unorouter](https://api.unorouter.com) (primary AI gateway)
+- [Groq docs](https://console.groq.com/docs) (fallback provider)
 - Decisions: [docs/DECISIONS.md](docs/DECISIONS.md)
 
 Licence: [MIT](LICENSE). Built for Code for Change / Devpost.
@@ -265,8 +256,8 @@ Licence: [MIT](LICENSE). Built for Code for Change / Devpost.
 
 **Built:** full FastAPI + React app with DEMO_MODE fixtures, Check, Practise (experience + helper), Help now, Family double opt-in, Scams near me, optional voice STT, optional push stubs, accessibility controls, tests, and docs.
 
-**Stubbed / light:** live AI depends on Unorouter model IDs; Web Push needs VAPID keys; region hotlines are TODO placeholders; older-adult live test not yet run.
+**Stubbed / light:** live AI depends on Unorouter model IDs; Web Push needs VAPID keys; region packs cover the UK and a generic (US FTC) pack only; older-adult live test not yet run.
 
 **Risky for demo day:** free-tier model 429s under parallel judging; speechSynthesis voice set differs by OS; iPhone push only after Home Screen install.
 
-**Three things to check by hand before demo day:** (1) full Practise hang-up debrief in DEMO_MODE, (2) Check result highlights on the sample bank text, (3) family invite accept + console email alert.
+**Three things to check by hand before a live demo:** (1) full Practise hang-up debrief in DEMO_MODE, (2) Check result highlights on the sample bank text, (3) family invite accept + console email alert.
