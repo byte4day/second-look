@@ -6,11 +6,11 @@ Scam Shield is a calm web app that helps older adults practise hanging up on pre
 
 ## The problem
 
-Imposter scams (bank, government, grandchild, tech support, romance) cause high losses for older adults. Common red flags include unexpected contact, urgency, secrecy, threats, requests for one-time codes, and unusual payment methods. FTC data for 2024 shows that among older adults who lost $10,000 or more to business or government imposters, 41% said a phone call was the first contact; payment methods included crypto 33%, bank transfer 20%, and cash 16% ([FTC Consumer Sentinel / Data Spotlight](https://www.ftc.gov/news-events/data-visualizations/data-spotlight)).
+Imposter scams (bank, government, grandchild, tech support, romance) cause high losses for older adults. Common red flags include unexpected contact, urgency, secrecy, threats, requests for one-time codes, and unusual payment methods. FTC data for 2024 shows that among older adults who lost $10,000 or more to business or government imposters, 41% said a phone call was the first contact; payment methods included crypto 33%, bank transfer 20%, and cash 16% ([FTC Data Spotlight, Aug 2025](https://www.ftc.gov/news-events/data-visualizations/data-spotlight/2025/08/false-alarm-real-scam-how-scammers-are-stealing-older-adults-life-savings)).
 
 ## Why simulation
 
-A CHI 2026 study (ROLESafe, 144 older adults) found that practising as the target ("Experiencer") and advising a simulated victim ("Helper") both improved fraud identification versus static material, and Helpers beat passive Observers. Group differences were **not** seen at follow-up, so this app includes both modes and an optional "remind me to practise" refresher rather than a one-off lesson.
+A [CHI 2026 study](https://arxiv.org/abs/2601.12324) (ROLESafe, 144 older adults) found that practising as the target ("Experiencer") and advising a simulated victim ("Helper") both improved fraud identification versus static material, and Helpers beat passive Observers. Group differences were **not** seen at follow-up, so this app includes both modes and an optional "remind me to practise" refresher rather than a one-off lesson.
 
 Tone rule: never shame. Scammers are professionals. Stopping is always a good move.
 
@@ -105,7 +105,7 @@ docker compose up --build
 
 ## Using real AI with Unorouter
 
-Scam Shield's AI runs through the [Unorouter](https://api.unorouter.com) gateway (OpenAI-compatible), as the hackathon requires. Groq stays as an optional fallback provider.
+Scam Shield's AI runs through the [Unorouter](https://unorouter.com) gateway (OpenAI-compatible), as the hackathon requires. Groq stays as an optional fallback provider.
 
 1. Get a Unorouter API key.
 2. Set in `.env`:
@@ -241,12 +241,12 @@ Submitted to Code for Change / Devpost on 24 November 2026.
 
 ## Evidence and credits
 
-- [FTC Data Spotlight on older adults and imposter scams](https://www.ftc.gov/news-events/data-visualizations/data-spotlight)
-- CHI 2026 ROLESafe (Experiencer / Helper / Observer findings; follow-up caveat)
+- [FTC Data Spotlight: False alarm, real scam (Aug 2025)](https://www.ftc.gov/news-events/data-visualizations/data-spotlight/2025/08/false-alarm-real-scam-how-scammers-are-stealing-older-adults-life-savings)
+- [Deng et al., CHI 2026: Experiencer, Helper, or Observer (ROLESafe)](https://arxiv.org/abs/2601.12324) (findings and follow-up caveat)
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - [NCOA guidance on imposter scams](https://www.ncoa.org/)
-- U.S. Senate Special Committee on Aging fraud resources
-- [Unorouter](https://api.unorouter.com) (primary AI gateway)
+- [U.S. Senate Special Committee on Aging fraud hotline](https://www.aging.senate.gov/fraud-hotline)
+- [Unorouter](https://unorouter.com) (primary AI gateway)
 - [Groq docs](https://console.groq.com/docs) (fallback provider)
 - Decisions: [docs/DECISIONS.md](docs/DECISIONS.md)
 
