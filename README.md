@@ -1,5 +1,7 @@
 # Scam Shield
 
+> **Status: Submitted.** Scam Shield is complete and was submitted to the hackathon on 24 November 2026.
+
 Scam Shield is a calm web app that helps older adults practise hanging up on pretence scammers, check worrying messages, and reach trusted people quickly. It is built for a student social-impact hackathon and for people who are not tech experts. Judges can clone the repo, follow this README, and run a full demo in under ten minutes with or without an API key.
 
 ## The problem
